@@ -24,7 +24,7 @@
             {% for accounting_period in periods %}
                 <option
                     value="{{ accounting_period.pk }}"
-                    {% if accounting_period.pk == period.pk %}selected{% endif %}
+                    {% if selected_period and accounting_period.pk == selected_period.pk %}selected{% endif %}
                 >
                     {{ accounting_period }}
                 </option>

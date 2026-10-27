@@ -25,16 +25,15 @@ def profile_view(request):
     settings = BusinessSettings.objects.first()
     periods  = AccountingPeriod.objects.filter(start_date__lte=today).order_by("-start_date")
     
-    current_period = AccountingPeriod.objects.filter( start_date__lte=today, end_date__gte=today).first()
-    
-    selected_period = current_period
+    current_period = AccountingPeriod.objects.filter(start_date__lte=today, end_date__gte=today).first()
 
+    selected_period = current_period
     period_id = request.GET.get("period")
 
     if period_id:
         try:
-            selected_period = periods.get(pk=period_id)
-        except AccountingPeriod.DoesNotExist:
+            selected_period = periods.get(pk=int(period_id))
+        except (TypeError, ValueError, AccountingPeriod.DoesNotExist):
             selected_period = current_period
 
     if selected_period:
