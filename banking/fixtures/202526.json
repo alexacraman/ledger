@@ -1,0 +1,1475 @@
+[
+{
+    "model": "banking.bankaccount",
+    "pk": 1,
+    "fields": {
+        "name": "Flex Direct",
+        "account": 1,
+        "is_active": true
+    }
+},
+{
+    "model": "banking.bankstatementimport",
+    "pk": 1,
+    "fields": {
+        "bank_account": 1,
+        "filename": "Inc 25-26.csv",
+        "file_hash": "7f9c3b1c4b20e643510504d7fe5f8d06b69c583250bebf93d49ffa35f2a7561f",
+        "imported_at": "2026-10-03T11:52:01.174Z",
+        "rows_imported": 52,
+        "rows_skipped": 0
+    }
+},
+{
+    "model": "banking.bankstatementimport",
+    "pk": 2,
+    "fields": {
+        "bank_account": 1,
+        "filename": " ESA 25-26.csv",
+        "file_hash": "dd99f752e56a5726e6625254256ed2e2bfb2e4d7022174726b9d3264a22d8257",
+        "imported_at": "2026-10-03T13:33:21.634Z",
+        "rows_imported": 28,
+        "rows_skipped": 0
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 1,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 2,
+        "transaction_date": "2025-04-07",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 36,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.184Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 2,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 3,
+        "transaction_date": "2025-04-30",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "727.32",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 80,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.191Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 3,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 4,
+        "transaction_date": "2025-05-01",
+        "transaction_type": "Bank credit",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 10,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.193Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 4,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 5,
+        "transaction_date": "2025-05-01",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 22,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.196Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 5,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 6,
+        "transaction_date": "2025-05-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 64,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.199Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 6,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 7,
+        "transaction_date": "2025-05-30",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "633.55",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 79,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.201Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 7,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 8,
+        "transaction_date": "2025-06-02",
+        "transaction_type": "Bank credit",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 11,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.203Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 8,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 9,
+        "transaction_date": "2025-06-02",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 23,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.206Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 9,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 10,
+        "transaction_date": "2025-06-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 59,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.209Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 10,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 11,
+        "transaction_date": "2025-06-30",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "633.55",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 77,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.211Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 11,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 12,
+        "transaction_date": "2025-07-01",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 12,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.214Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 12,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 13,
+        "transaction_date": "2025-07-01",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 25,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.216Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 13,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 14,
+        "transaction_date": "2025-07-07",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 58,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.218Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 14,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 15,
+        "transaction_date": "2025-07-31",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "744.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 78,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.219Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 15,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 16,
+        "transaction_date": "2025-08-01",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 9,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.221Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 16,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 17,
+        "transaction_date": "2025-08-01",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 24,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.224Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 17,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 18,
+        "transaction_date": "2025-08-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 55,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.226Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 18,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 19,
+        "transaction_date": "2025-08-29",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "792.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 76,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.228Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 19,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 20,
+        "transaction_date": "2025-09-01",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 8,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.230Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 20,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 21,
+        "transaction_date": "2025-09-01",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 21,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.233Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 21,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 22,
+        "transaction_date": "2025-09-08",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 51,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.235Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 22,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 23,
+        "transaction_date": "2025-09-30",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "792.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 75,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.237Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 23,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 24,
+        "transaction_date": "2025-10-01",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 7,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.238Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 24,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 25,
+        "transaction_date": "2025-10-01",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 20,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.241Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 25,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 26,
+        "transaction_date": "2025-10-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 48,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.243Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 26,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 27,
+        "transaction_date": "2025-10-31",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "648.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 74,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.244Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 27,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 28,
+        "transaction_date": "2025-11-03",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 6,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.248Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 28,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 29,
+        "transaction_date": "2025-11-03",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 19,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.250Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 29,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 30,
+        "transaction_date": "2025-11-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 45,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.251Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 30,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 31,
+        "transaction_date": "2025-11-28",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "648.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 73,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.253Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 31,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 32,
+        "transaction_date": "2025-12-01",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 5,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.255Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 32,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 33,
+        "transaction_date": "2025-12-01",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 18,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.258Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 33,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 34,
+        "transaction_date": "2025-12-08",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 41,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.260Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 34,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 35,
+        "transaction_date": "2025-12-31",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "645.14",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 72,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.262Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 35,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 36,
+        "transaction_date": "2026-01-02",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 4,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.265Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 36,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 37,
+        "transaction_date": "2026-01-02",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 17,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.267Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 37,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 38,
+        "transaction_date": "2026-01-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 40,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.269Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 38,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 39,
+        "transaction_date": "2026-01-30",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "648.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 71,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.271Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 39,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 40,
+        "transaction_date": "2026-02-02",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 3,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.274Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 40,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 41,
+        "transaction_date": "2026-02-02",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 16,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.276Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 41,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 42,
+        "transaction_date": "2026-02-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 39,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.278Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 42,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 43,
+        "transaction_date": "2026-02-20",
+        "transaction_type": "Visa purchase",
+        "description": "IONOS CLOUD LTD GLOUCESTER GB",
+        "amount": "-4.80",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 70,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.282Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 43,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 44,
+        "transaction_date": "2026-02-27",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "648.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 68,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.286Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 44,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 45,
+        "transaction_date": "2026-03-02",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 2,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.288Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 45,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 46,
+        "transaction_date": "2026-03-02",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "80.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 13,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.291Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 46,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 47,
+        "transaction_date": "2026-03-02",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 15,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.292Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 47,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 48,
+        "transaction_date": "2026-03-06",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 38,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.294Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 48,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 49,
+        "transaction_date": "2026-03-31",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "648.08",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 69,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.296Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 49,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 50,
+        "transaction_date": "2026-04-01",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "50.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 14,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.299Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 50,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 51,
+        "transaction_date": "2026-04-02",
+        "transaction_type": "Transfer from",
+        "description": "CONDUCTIVE E",
+        "amount": "40.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 1,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.301Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 51,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 52,
+        "transaction_date": "2026-04-07",
+        "transaction_type": "Standing order",
+        "description": "HOLBROOK PCC",
+        "amount": "-60.00",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 37,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.303Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 52,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 1,
+        "source_row": 53,
+        "transaction_date": "2026-04-30",
+        "transaction_type": "Bank credit",
+        "description": "BILLINGSHURST COMMUNITY TRANSPORT L",
+        "amount": "658.60",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 67,
+        "reconciled": true,
+        "created_at": "2026-10-03T11:52:01.305Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 53,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 2,
+        "transaction_date": "2025-04-17",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "278.75",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 30,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.671Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 54,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 3,
+        "transaction_date": "2025-05-01",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 35,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.675Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 55,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 4,
+        "transaction_date": "2025-05-15",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 63,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.680Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 56,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 5,
+        "transaction_date": "2025-05-29",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 62,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.682Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 57,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 6,
+        "transaction_date": "2025-06-12",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 61,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.684Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 58,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 7,
+        "transaction_date": "2025-06-26",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 60,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.685Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 59,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 8,
+        "transaction_date": "2025-07-10",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 57,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.690Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 60,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 9,
+        "transaction_date": "2025-07-24",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 56,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.692Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 61,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 10,
+        "transaction_date": "2025-08-07",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 54,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.694Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 62,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 11,
+        "transaction_date": "2025-08-21",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 52,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.698Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 63,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 12,
+        "transaction_date": "2025-09-04",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 53,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.701Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 64,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 13,
+        "transaction_date": "2025-09-18",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 50,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.703Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 65,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 14,
+        "transaction_date": "2025-10-02",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 49,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.704Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 66,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 15,
+        "transaction_date": "2025-10-16",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 47,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.706Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 67,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 16,
+        "transaction_date": "2025-10-30",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 46,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.708Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 68,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 17,
+        "transaction_date": "2025-11-13",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 44,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.710Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 69,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 18,
+        "transaction_date": "2025-11-27",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 43,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.713Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 70,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 19,
+        "transaction_date": "2025-12-11",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "291.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 42,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.715Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 71,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 20,
+        "transaction_date": "2025-12-23",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 34,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.717Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 72,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 21,
+        "transaction_date": "2026-01-08",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 33,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.718Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 73,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 22,
+        "transaction_date": "2026-01-22",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 29,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.720Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 74,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 23,
+        "transaction_date": "2026-02-05",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 32,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.721Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 75,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 24,
+        "transaction_date": "2026-02-19",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 28,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.723Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 76,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 25,
+        "transaction_date": "2026-03-05",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 31,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.725Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 77,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 26,
+        "transaction_date": "2026-03-19",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 27,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.727Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 78,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 27,
+        "transaction_date": "2026-04-02",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "281.10",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 26,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.730Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 79,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 28,
+        "transaction_date": "2026-04-16",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "286.45",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 65,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.732Z"
+    }
+},
+{
+    "model": "banking.banktransaction",
+    "pk": 80,
+    "fields": {
+        "bank_account": 1,
+        "import_batch": 2,
+        "source_row": 29,
+        "transaction_date": "2026-04-30",
+        "transaction_type": "Bank credit",
+        "description": "JN310866C DWP EESA",
+        "amount": "291.80",
+        "balance": null,
+        "reference": "",
+        "journal_entry": 66,
+        "reconciled": true,
+        "created_at": "2026-10-03T13:33:21.734Z"
+    }
+}
+]
