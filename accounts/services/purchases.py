@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from accounts.models import Account, Purchase, PurchasePayment
-from business.services.settings import get_business_settings
+from business.services.settings import get_accounting_basis_for_date, get_business_settings, get_vat_registration_for_date
 
 from .journal import create_journal_entry
 
@@ -22,8 +22,12 @@ def post_purchase( purchase, purchases_acc=None, vat_reclaimable_acc=None, accou
     """
 
     settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(purchase.purchase_date)
+    vat_status = get_vat_registration_for_date(purchase.purchase_date)
 
-    if settings.accounting_basis == "CASH":
+    if accounting_basis == "CASH":
+        if vat_status["vat_registered"]:
+            raise NotImplementedError( "Cash-basis VAT accounting has not yet been implemented." )
         return finalise_cash_purchase(purchase)
 
     return post_purchase_to_ledger(purchase, purchases_acc, vat_reclaimable_acc, accounts_payable_acc)
@@ -34,12 +38,13 @@ def finalise_cash_purchase(purchase):
     Finalise a purchase under cash basis without creating a journal entry.
     """
 
-    settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(purchase.purchase_date)
+    vat_status = get_vat_registration_for_date(purchase.purchase_date)
 
-    if settings.accounting_basis != "CASH":
+    if accounting_basis != "CASH":
         raise ValidationError( "This function can only be used for cash-basis accounting." )
 
-    if settings.vat_registered:
+    if vat_status["vat_registered"]:
         raise NotImplementedError( "Cash-basis VAT accounting has not yet been implemented." )
 
     if purchase.status != "DRAFT":
@@ -75,8 +80,10 @@ def post_purchase_to_ledger( purchase, purchases_acc, vat_reclaimable_acc, accou
     """
 
     settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(purchase.purchase_date)
+    vat_status = get_vat_registration_for_date(purchase.purchase_date)
 
-    if settings.accounting_basis != "ACCRUAL":
+    if accounting_basis != "ACCRUAL":
         raise ValidationError( "post_purchase_to_ledger() is only available under accrual accounting." )
 
     if purchase.status != "DRAFT":
@@ -103,7 +110,7 @@ def post_purchase_to_ledger( purchase, purchases_acc, vat_reclaimable_acc, accou
             },
         ]
 
-        if settings.vat_registered and purchase.total_vat > 0:
+        if vat_status["vat_registered"] and purchase.total_vat > 0:
             items.insert(
                 1,
                 {
@@ -145,8 +152,10 @@ def record_purchase_payment( purchase, amount, bank_account, accounts_payable_ac
         raise ValidationError( "Payment amount must be greater than zero." )
 
     settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(payment_date)
+    vat_status = get_vat_registration_for_date(payment_date)
 
-    if settings.vat_registered and settings.accounting_basis == "CASH":
+    if vat_status["vat_registered"] and accounting_basis == "CASH":
         raise NotImplementedError( "Cash-basis VAT accounting has not yet been implemented." )
 
     with transaction.atomic():
@@ -160,7 +169,7 @@ def record_purchase_payment( purchase, amount, bank_account, accounts_payable_ac
         if amount > outstanding:
             raise ValidationError( f"Payment exceeds the outstanding amount of £{outstanding}." )
 
-        if settings.accounting_basis == "CASH":
+        if accounting_basis == "CASH":
 
             if purchase.journal_entry_id:
                 raise ValidationError( "A cash-basis purchase cannot already have an accrual journal entry." )
@@ -225,12 +234,13 @@ def void_purchase(*, purchase):
     voided directly because the payment has already affected the
     ledger.
     """
-    settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(purchase.purchase_date)
+    vat_status = get_vat_registration_for_date(purchase.purchase_date)
 
-    if settings.accounting_basis != "CASH":
+    if accounting_basis != "CASH":
         raise NotImplementedError( "Purchase voiding for accrual-basis purchases has not yet been implemented." )
 
-    if settings.vat_registered:
+    if vat_status["vat_registered"]:
         raise NotImplementedError( "VAT-registered purchase voiding has not yet been implemented." )
 
     with transaction.atomic():

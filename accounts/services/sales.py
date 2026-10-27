@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from accounts.models import Account, Invoice, Payment
-from business.services.settings import get_business_settings
+from business.services.settings import get_accounting_basis_for_date, get_business_settings, get_vat_registration_for_date
 
 from .journal import create_journal_entry
 
@@ -27,8 +27,14 @@ def post_invoice(
     """
 
     settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(invoice.issue_date)
+    vat_status = get_vat_registration_for_date(invoice.issue_date)
 
-    if settings.accounting_basis == "CASH":
+    if accounting_basis == "CASH":
+        if vat_status["vat_registered"]:
+            raise NotImplementedError(
+                "Cash-basis VAT accounting has not yet been implemented."
+            )
         return finalise_cash_invoice(invoice)
 
     return post_invoice_to_ledger(
@@ -44,14 +50,15 @@ def finalise_cash_invoice(invoice):
     Finalise an invoice under cash basis without creating a journal entry.
     """
 
-    settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(invoice.issue_date)
+    vat_status = get_vat_registration_for_date(invoice.issue_date)
 
-    if settings.accounting_basis != "CASH":
+    if accounting_basis != "CASH":
         raise ValidationError(
             "This function can only be used for cash-basis accounting."
         )
 
-    if settings.vat_registered:
+    if vat_status["vat_registered"]:
         raise NotImplementedError(
             "Cash-basis VAT accounting has not yet been implemented."
         )
@@ -104,8 +111,10 @@ def post_invoice_to_ledger(
     """
 
     settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(invoice.issue_date)
+    vat_status = get_vat_registration_for_date(invoice.issue_date)
 
-    if settings.accounting_basis != "ACCRUAL":
+    if accounting_basis != "ACCRUAL":
         raise ValidationError(
             "post_invoice_to_ledger() is only available under accrual accounting."
         )
@@ -143,7 +152,7 @@ def post_invoice_to_ledger(
             },
         ]
 
-        if settings.vat_registered and invoice.total_vat > 0:
+        if vat_status["vat_registered"] and invoice.total_vat > 0:
             items.append(
                 {
                     "account": vat_liability_acc,
@@ -194,8 +203,10 @@ def record_invoice_payment(
         )
 
     settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(payment_date)
+    vat_status = get_vat_registration_for_date(payment_date)
 
-    if settings.vat_registered and settings.accounting_basis == "CASH":
+    if vat_status["vat_registered"] and accounting_basis == "CASH":
         raise NotImplementedError(
             "Cash-basis VAT accounting has not yet been implemented."
         )
@@ -220,7 +231,7 @@ def record_invoice_payment(
                 f"Payment exceeds the outstanding amount of £{outstanding}."
             )
 
-        if settings.accounting_basis == "CASH":
+        if accounting_basis == "CASH":
 
             if invoice.journal_entry_id:
                 raise ValidationError(
@@ -313,14 +324,15 @@ def void_invoice(*, invoice):
     voided directly because the payment has already affected the
     ledger.
     """
-    settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(invoice.issue_date)
+    vat_status = get_vat_registration_for_date(invoice.issue_date)
 
-    if settings.accounting_basis != "CASH":
+    if accounting_basis != "CASH":
         raise NotImplementedError(
             "Invoice voiding for accrual-basis invoices has not yet been implemented."
         )
 
-    if settings.vat_registered:
+    if vat_status["vat_registered"]:
         raise NotImplementedError(
             "VAT-registered invoice voiding has not yet been implemented."
         )

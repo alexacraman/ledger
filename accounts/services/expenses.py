@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from business.services.settings import get_business_settings
+from business.services.settings import get_accounting_basis_for_date, get_business_settings, get_vat_registration_for_date
 from accounts.models import Account
 from .journal import create_journal_entry
 from .validation import validate_account_type, validate_payment_account
@@ -22,14 +22,15 @@ def void_expense(*, expense):
         Dr Payment account
         Cr Expense account
     """
-    settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(expense.expense_date)
+    vat_status = get_vat_registration_for_date(expense.expense_date)
 
-    if settings.accounting_basis != "CASH":
+    if accounting_basis != "CASH":
         raise NotImplementedError(
             "Expense voiding for accrual-basis expenses has not yet been implemented."
         )
 
-    if settings.vat_registered:
+    if vat_status["vat_registered"]:
         raise NotImplementedError(
             "VAT-registered expense voiding has not yet been implemented."
         )
@@ -88,12 +89,13 @@ def record_expense(*, expense, expense_account, payment_account, reference=""):
     Cr Bank/Cash
     """
 
-    settings = get_business_settings()
+    accounting_basis = get_accounting_basis_for_date(expense.expense_date)
+    vat_status = get_vat_registration_for_date(expense.expense_date)
 
-    if settings.accounting_basis != "CASH":
+    if accounting_basis != "CASH":
         raise NotImplementedError( "Accrual-basis expenses have not yet been implemented." )
 
-    if settings.vat_registered:
+    if vat_status["vat_registered"]:
         raise NotImplementedError( "VAT-registered expenses have not yet been implemented." )
 
     if expense.status != "DRAFT":

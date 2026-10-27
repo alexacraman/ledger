@@ -6,9 +6,11 @@ from django.test import TestCase
 from accounts.models import Account
 from accounts.services.income import record_income
 
-from .models import BusinessSettings
+from .models import AccountingBasisPeriod, BusinessSettings, VATRegistrationPeriod
 from .services.settings import (
     financial_activity_exists,
+    get_accounting_basis_for_date,
+    get_vat_registration_for_date,
     update_business_settings,
 )
 
@@ -82,7 +84,7 @@ class BusinessSettingsTests(TestCase):
 
         self.assertEqual(settings.accounting_basis, "ACCRUAL")
 
-    def test_accounting_basis_cannot_change_after_financial_activity(self):
+    def test_accounting_basis_can_change_after_financial_activity_if_effective_today(self):
         record_income(
             income_account=self.income_account,
             payment_account=self.bank_account,
@@ -91,15 +93,16 @@ class BusinessSettingsTests(TestCase):
             description="Test income",
         )
 
-        with self.assertRaises(ValidationError):
-            update_business_settings(
-                business_name="Test Business",
-                accounting_basis="ACCRUAL",
-                vat_registered=False,
-                vat_scheme="",
-            )
+        settings = update_business_settings(
+            business_name="Test Business",
+            accounting_basis="ACCRUAL",
+            vat_registered=False,
+            vat_scheme="",
+        )
 
-    def test_vat_registration_cannot_change_after_financial_activity(self):
+        self.assertEqual(settings.accounting_basis, "ACCRUAL")
+
+    def test_vat_registration_can_change_after_financial_activity_if_effective_today(self):
         income_account = Account.objects.get(code="4000")
         bank_account = Account.objects.get(code="1000")
 
@@ -111,13 +114,15 @@ class BusinessSettingsTests(TestCase):
             description="Test income",
         )
 
-        with self.assertRaises(ValidationError):
-            update_business_settings(
-                business_name="Test Business",
-                accounting_basis="CASH",
-                vat_registered=True,
-                vat_scheme="STANDARD",
-            )
+        settings = update_business_settings(
+            business_name="Test Business",
+            accounting_basis="CASH",
+            vat_registered=True,
+            vat_scheme="STANDARD",
+        )
+
+        self.assertTrue(settings.vat_registered)
+        self.assertEqual(settings.vat_scheme, "STANDARD")
 
     def test_business_name_can_change_after_financial_activity(self):
         income_account = Account.objects.get(code="4000")
@@ -170,6 +175,65 @@ class BusinessSettingsTests(TestCase):
         )
 
         self.assertTrue(financial_activity_exists())
+
+    def test_accounting_basis_is_effective_by_date(self):
+        AccountingBasisPeriod.objects.create(
+            effective_from="2025-10-01",
+            accounting_basis="ACCRUAL",
+        )
+
+        before = get_accounting_basis_for_date(self._date_from_iso("2025-09-30"))
+        after = get_accounting_basis_for_date(self._date_from_iso("2025-10-15"))
+
+        self.assertEqual(before, "CASH")
+        self.assertEqual(after, "ACCRUAL")
+
+    def test_accounting_basis_periods_cannot_overlap(self):
+        AccountingBasisPeriod.objects.create(
+            effective_from="2025-10-01",
+            accounting_basis="ACCRUAL",
+        )
+
+        with self.assertRaises(ValidationError):
+            AccountingBasisPeriod.objects.create(
+                effective_from="2025-09-15",
+                effective_to="2025-11-01",
+                accounting_basis="CASH",
+            )
+
+    def test_vat_registration_is_effective_by_date(self):
+        VATRegistrationPeriod.objects.create(
+            effective_from="2025-10-01",
+            vat_registered=True,
+            vat_scheme="STANDARD",
+        )
+
+        before = get_vat_registration_for_date(self._date_from_iso("2025-09-30"))
+        after = get_vat_registration_for_date(self._date_from_iso("2025-10-15"))
+
+        self.assertFalse(before["vat_registered"])
+        self.assertTrue(after["vat_registered"])
+        self.assertEqual(after["vat_scheme"], "STANDARD")
+
+    def test_vat_registration_periods_cannot_overlap(self):
+        VATRegistrationPeriod.objects.create(
+            effective_from="2025-10-01",
+            vat_registered=True,
+            vat_scheme="STANDARD",
+        )
+
+        with self.assertRaises(ValidationError):
+            VATRegistrationPeriod.objects.create(
+                effective_from="2025-09-15",
+                effective_to="2025-11-01",
+                vat_registered=False,
+                vat_scheme="",
+            )
+
+    @staticmethod
+    def _date_from_iso(value):
+        from datetime import date
+        return date.fromisoformat(value)
 
     @staticmethod
     def _date():
