@@ -1,0 +1,33 @@
+<div class="flex justify-center my-24">
+    <div class="pagination flex items-center gap-2">
+
+        {% if page_obj.has_previous %}
+            <a class="border py-2 px-4 text-slate-400 hover:text-slate-500"
+               href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                &laquo; first
+            </a>
+
+            <a class="border py-2 px-4 text-slate-400 hover:text-slate-500"
+               href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                previous
+            </a>
+        {% endif %}
+
+        <span class="px-4 text-sm text-slate-500">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a class="border py-2 px-4 text-slate-400 hover:text-slate-500"
+               href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                next
+            </a>
+
+            <a class="border py-2 px-4 text-slate-400 hover:text-slate-500"
+               href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                last &raquo;
+            </a>
+        {% endif %}
+
+    </div>
+</div>

@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-6 lg:px-12 lg:py-18">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Trial Balance
+            </h1>
+
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                As at {{ as_at|date:"j F Y" }}
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- Date selector -->
+    <form method="get" class="mb-6">
+
+        <div class="flex flex-col sm:flex-row sm:items-end gap-3">
+
+            <div>
+                <label for="as_at"
+                       class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Trial balance date
+                </label>
+
+                <input type="date" id="as_at" name="as_at" value="{{ as_at|date:'Y-m-d' }}" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" >
+            </div>
+
+            <button
+                type="submit"
+                class="px-4 py-2 rounded-lg
+                       bg-blue-600 hover:bg-blue-700
+                       text-white font-medium
+                       transition">
+                View
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- Trial Balance -->
+    <div class="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-sm">
+
+                <thead class="bg-gray-100 dark:bg-slate-700 border-b dark:border-slate-600">
+
+                    <tr>
+
+                        <th class="px-4 py-3 text-left font-semibold
+                                   text-gray-700 dark:text-gray-200">
+                            Code
+                        </th>
+
+                        <th class="px-4 py-3 text-left font-semibold
+                                   text-gray-700 dark:text-gray-200">
+                            Account
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-semibold
+                                   text-gray-700 dark:text-gray-200">
+                            Debit
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-semibold
+                                   text-gray-700 dark:text-gray-200">
+                            Credit
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y dark:divide-slate-700">
+
+                    {% for row in trial_balance %}
+
+                    <tr class="hover:bg-gray-50 text-slate-700 dark:hover:bg-slate-700/50">
+
+                        <td class="px-4 py-3 font-mono
+                                   text-gray-600 dark:text-gray-300">
+                            {{ row.account.code }}
+                        </td>
+
+                        <td class="px-4 py-3
+                                   text-gray-900 dark:text-white">
+                            {{ row.account.name }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right tabular-nums
+                                   text-gray-900 dark:text-white">
+                            {{ row.debit|floatformat:2 }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right tabular-nums
+                                   text-gray-900 dark:text-white">
+                            {{ row.credit|floatformat:2 }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="4"
+                            class="px-4 py-8 text-center
+                                   text-gray-500 dark:text-gray-400">
+                            No ledger balances found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+
+                <!-- Totals -->
+                <tfoot class="border-t-2 border-gray-400
+                              dark:border-slate-500
+                              bg-gray-50 dark:bg-slate-700">
+
+                    <tr class="font-bold">
+
+                        <td colspan="2"
+                            class="px-4 py-4 text-right
+                                   text-gray-900 dark:text-white">
+                            Total
+                        </td>
+
+                        <td class="px-4 py-4 text-right tabular-nums
+                                   text-gray-900 dark:text-white">
+                            {{ total_debit|floatformat:2 }}
+                        </td>
+
+                        <td class="px-4 py-4 text-right tabular-nums
+                                   text-gray-900 dark:text-white">
+                            {{ total_credit|floatformat:2 }}
+                        </td>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mx-auto max-w-5xl px-4 py-8">
+
+    <!-- Header -->
+    <div class="mb-8 flex items-start justify-between">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Purchase {{ purchase.reference|default:"" }}
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {{ purchase.purchase_date }}
+            </p>
+        </div>
+
+        {% if purchase.status == "DRAFT" %}
+            <a
+                href="{% url 'accounts:purchase_update' purchase.pk %}"
+                class="rounded-lg bg-[#224B75] px-4 py-2 text-sm font-medium text-white hover:bg-[#1b3d60]"
+            >
+                Edit purchase
+            </a>
+        {% endif %}
+
+    </div>
+
+
+    <!-- Purchase information -->
+    <div class="mb-8 grid gap-6 md:grid-cols-2">
+
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+            <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Supplier
+            </h2>
+
+            <div class="space-y-2 text-sm">
+
+                <div>
+                    <span class="text-gray-500 dark:text-gray-400">
+                        Name
+                    </span>
+
+                    <div class="font-medium text-gray-900 dark:text-white">
+                        {{ purchase.supplier.name }}
+                    </div>
+                </div>
+
+                {% if purchase.supplier_email %}
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">
+                            Email
+                        </span>
+
+                        <div class="text-gray-900 dark:text-white">
+                            {{ purchase.supplier_email }}
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+            <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Purchase details
+            </h2>
+
+            <dl class="space-y-2 text-sm">
+
+                <div class="flex justify-between">
+                    <dt class="text-gray-500 dark:text-gray-400">
+                        Purchase date
+                    </dt>
+                    <dd class="font-medium text-gray-900 dark:text-white">
+                        {{ purchase.purchase_date }}
+                    </dd>
+                </div>
+
+                <div class="flex justify-between">
+                    <dt class="text-gray-500 dark:text-gray-400">
+                        Due date
+                    </dt>
+                    <dd class="font-medium text-gray-900 dark:text-white">
+                        {{ purchase.due_date|default:"—" }}
+                    </dd>
+                </div>
+
+                <div class="flex justify-between">
+                    <dt class="text-gray-500 dark:text-gray-400">
+                        Status
+                    </dt>
+                    <dd class="font-medium text-gray-900 dark:text-white">
+                        {{ purchase.get_status_display }}
+                    </dd>
+                </div>
+
+                {% if purchase.supplier_reference %}
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500 dark:text-gray-400">
+                            Supplier reference
+                        </dt>
+                        <dd class="font-medium text-gray-900 dark:text-white">
+                            {{ purchase.reference }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+            </dl>
+
+        </div>
+
+    </div>
+
+
+    <!-- Line items -->
+    <div class="mb-8 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-700">
+
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Line items
+            </h2>
+
+            {% if purchase.status == "DRAFT" %}
+                <a
+                    href="{% url 'accounts:purchase_line_create' purchase.pk %}"
+                    class="text-sm font-medium text-[#224B75] hover:underline dark:text-blue-400"
+                >
+                    Add line item
+                </a>
+            {% endif %}
+
+        </div>
+
+
+        {% with lines=purchase.lines.all %}
+
+            {% if lines %}
+
+                <div class="overflow-x-auto">
+
+                    <table class="min-w-full text-sm">
+
+                        <thead class="bg-gray-50 dark:bg-slate-700/50">
+                            <tr>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300">
+                                    Description
+                                </th>
+
+                                <th class="px-6 py-3 text-right font-medium text-gray-500 dark:text-gray-300">
+                                    Qty
+                                </th>
+
+                                <th class="px-6 py-3 text-right font-medium text-gray-500 dark:text-gray-300">
+                                    Unit price
+                                </th>
+
+                                <th class="px-6 py-3 text-right font-medium text-gray-500 dark:text-gray-300">
+                                    Net
+                                </th>
+
+                                <th class="px-6 py-3 text-right font-medium text-gray-500 dark:text-gray-300">
+                                    VAT
+                                </th>
+
+                                <th class="px-6 py-3 text-right font-medium text-gray-500 dark:text-gray-300">
+                                    Gross
+                                </th>
+
+                                {% if purchase.status == "DRAFT" %}
+                                    <th class="px-6 py-3"></th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+
+                            {% for line in lines %}
+
+                                <tr>
+
+                                    <td class="px-6 py-4 text-gray-900 dark:text-white">
+                                        {{ line.description }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-right text-gray-700 dark:text-gray-300">
+                                        {{ line.quantity }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-right text-gray-700 dark:text-gray-300">
+                                        £{{ line.unit_price|floatformat:2 }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-right text-gray-700 dark:text-gray-300">
+                                        £{{ line.net_amount|floatformat:2 }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-right text-gray-700 dark:text-gray-300">
+                                        £{{ line.vat_amount|floatformat:2 }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-right font-medium text-gray-900 dark:text-white">
+                                        £{{ line.gross_amount|floatformat:2 }}
+                                    </td>
+
+                                    {% if purchase.status == "DRAFT" %}
+                                        <td class="px-6 py-4 text-right whitespace-nowrap">
+
+                                            <a
+                                                href="{% url 'accounts:purchase_line_update' purchase.pk line.pk %}"
+                                                class="mr-3 text-[#224B75] hover:underline dark:text-blue-400"
+                                            >
+                                                Edit
+                                            </a>
+
+                                            <a
+                                                href="{% url 'accounts:purchase_line_delete' purchase.pk line.pk %}"
+                                                class="text-red-600 hover:underline dark:text-red-400"
+                                            >
+                                                Delete
+                                            </a>
+
+                                        </td>
+                                    {% endif %}
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+                    No line items have been added to this purchase.
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+    </div>
+
+
+    <!-- Totals -->
+    <div class="ml-auto mb-8 max-w-sm rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="space-y-3 text-sm">
+
+            <div class="flex justify-between">
+                <span class="text-gray-500 dark:text-gray-400">
+                    Net
+                </span>
+                <span class="font-medium text-gray-900 dark:text-white">
+                    £{{ purchase.total_net|floatformat:2 }}
+                </span>
+            </div>
+
+            <div class="flex justify-between">
+                <span class="text-gray-500 dark:text-gray-400">
+                    VAT
+                </span>
+                <span class="font-medium text-gray-900 dark:text-white">
+                    £{{ purchase.total_vat|floatformat:2 }}
+                </span>
+            </div>
+
+            <div class="border-t border-gray-200 pt-3 dark:border-slate-700">
+                <div class="flex justify-between">
+                    <span class="font-semibold text-gray-900 dark:text-white">
+                        Total
+                    </span>
+                    <span class="text-lg font-bold text-gray-900 dark:text-white">
+                        £{{ purchase.total_gross|floatformat:2 }}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Back -->
+    <div>
+        <a
+            href="{% url 'accounts:purchase_list' %}"
+            class="text-sm font-medium text-[#224B75] hover:underline dark:text-blue-400"
+        >
+            ← Back to purchases
+        </a>
+    </div>
+    <!-- Post the purchase -->
+    <div class="flex items-center gap-3 my-4 sm:my-12">
+
+    {% if purchase.status == "DRAFT" %}
+        <a
+            href="{% url 'accounts:purchase_update' purchase.pk %}"
+            class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700"
+        >
+            Edit
+        </a>
+
+        <form
+            method="post"
+            action="{% url 'accounts:purchase_post' purchase.pk %}"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="rounded-lg bg-[#224B75] px-4 py-2 text-sm font-medium text-white hover:bg-[#1b3d60]"
+            >
+                Post purchase
+            </button>
+        </form>
+    {% endif %}
+
+</div>
+        <!-- Payments -->
+<div class="mb-8 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+    <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-700">
+
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Payments
+        </h2>
+
+        {% if purchase.status == "POSTED" or purchase.status == "PARTIAL" %}
+            {% if purchase.amount_outstanding > 0 %}
+                <a
+                    href="{% url 'accounts:purchase_payment_create' purchase.pk %}"
+                    class="text-sm font-medium text-[#224B75] hover:underline dark:text-blue-400"
+                >
+                    Record payment
+                </a>
+            {% endif %}
+        {% endif %}
+
+    </div>
+
+
+    {% with payments=purchase.payments.all %}
+
+        {% if payments %}
+
+            <div class="overflow-x-auto ">
+
+                <table class="min-w-full text-sm">
+
+                    <thead class="bg-gray-50 dark:bg-slate-700/50">
+                        <tr>
+
+                            <th class="px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300">
+                                Date
+                            </th>
+
+                            <th class="px-6 py-3 text-left font-medium text-gray-500 dark:text-gray-300">
+                                Reference
+                            </th>
+
+                            <th class="px-6 py-3 text-right font-medium text-gray-500 dark:text-gray-300">
+                                Amount
+                            </th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+
+                        {% for payment in payments %}
+
+                            <tr>
+
+                                <td class="px-6 py-4 text-gray-900 dark:text-white">
+                                    {{ payment.payment_date }}
+                                </td>
+
+                                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
+                                    {{ payment.reference|default:"—" }}
+                                </td>
+
+                                <td class="px-6 py-4 text-right font-medium text-gray-900 dark:text-white">
+                                    £{{ payment.amount|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                No payments have been recorded.
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+</div>
+
+
+
+</div>
+
+
+
+{% endblock %}

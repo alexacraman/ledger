@@ -1,0 +1,57 @@
+<div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+    <div class="flex items-start justify-between gap-4">
+
+        <div>
+            <p class="text-sm font-medium text-gray-500">
+                Outstanding invoices
+            </p>
+
+            <p class="mt-2 text-3xl font-bold text-gray-900">
+                £{{ document_data.outstanding_invoices.total|floatformat:2 }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+                {{ document_data.outstanding_invoices.count }}
+                invoice{{ document_data.outstanding_invoices.count|pluralize }}
+            </p>
+        </div>
+
+    </div>
+
+    {% if document_data.outstanding_invoices.overdue_count %}
+
+        <div class="mt-5 rounded-lg bg-red-50 px-4 py-3">
+            <p class="text-sm font-semibold text-red-700">
+                £{{ document_data.outstanding_invoices.overdue_total|floatformat:2 }}
+                overdue
+            </p>
+
+            <p class="mt-1 text-xs text-red-600">
+                {{ document_data.outstanding_invoices.overdue_count }}
+                invoice{{ document_data.outstanding_invoices.overdue_count|pluralize }}
+            </p>
+        </div>
+
+    {% else %}
+
+        <div class="mt-5 rounded-lg bg-gray-50 px-4 py-3">
+            <p class="text-sm text-gray-600">
+                No overdue invoices
+            </p>
+        </div>
+
+    {% endif %}
+
+    <div class="mt-5">
+
+        <a
+            href="{% url 'accounts:invoice_list' %}"
+            class="text-sm font-semibold text-[#224B75] hover:underline"
+        >
+            View invoices
+        </a>
+
+    </div>
+
+</div>

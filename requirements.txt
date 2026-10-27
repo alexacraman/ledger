@@ -1,0 +1,13 @@
+asgiref==3.12.1
+charset-normalizer==3.5.1
+defusedxml==0.7.1
+Django==6.1.1
+django-treebeard==7.0.1
+Faker==40.37.0
+fonttools==4.63.0
+fpdf2==2.8.8
+Markdown==3.10.3
+ofxtools==1.1.1
+pillow==12.3.0
+reportlab==5.0.1
+sqlparse==0.6.0

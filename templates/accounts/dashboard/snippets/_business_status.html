@@ -1,0 +1,159 @@
+<section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-slate-200">
+
+        <div class="flex items-center justify-between gap-4">
+
+            <div>
+                <h2 class="text-xl 2xl:text-2xl font-semibold text-slate-900">
+                    Business status
+                </h2>
+
+                <p class="text-sm 2xl:text-base text-slate-500 mt-1">
+                    Current bookkeeping configuration
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Status -->
+    <div class="p-6">
+
+        <div class="space-y-5">
+
+            <!-- Accounting basis -->
+            <div class="flex items-start justify-between gap-4">
+
+                <div>
+                    <p class="text-sm font-medium text-slate-700">
+                        Accounting basis
+                    </p>
+
+                    <p class="text-xs text-slate-500 mt-1">
+                        How transactions are accounted for
+                    </p>
+                </div>
+
+                {% if settings %}
+
+                    <span class="shrink-0 inline-flex items-center rounded-lg bg-sky-50 border border-sky-200 px-3 py-1 text-sm font-medium text-sky-700">
+                        {{ settings.get_accounting_basis_display }}
+                    </span>
+
+                {% else %}
+
+                    <span class="shrink-0 inline-flex items-center rounded-lg bg-orange-50 border border-orange-200 px-3 py-1 text-sm font-medium text-orange-700">
+                        Not configured
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- VAT -->
+            <div class="flex items-start justify-between gap-4">
+
+                <div>
+                    <p class="text-sm font-medium text-slate-700">
+                        VAT registration
+                    </p>
+
+                    <p class="text-xs text-slate-500 mt-1">
+                        VAT treatment for the business
+                    </p>
+                </div>
+
+                {% if settings and settings.vat_registered %}
+
+                    <div class="shrink-0 text-right">
+
+                        <span class="inline-flex items-center rounded-lg bg-sky-50 border border-sky-200 px-3 py-1 text-sm font-medium text-sky-700">
+                            Registered
+                        </span>
+
+                        {% if settings.vat_scheme %}
+                            <p class="text-xs text-slate-500 mt-1">
+                                {{ settings.get_vat_scheme_display }}
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                {% else %}
+
+                    <span class="shrink-0 inline-flex items-center rounded-lg bg-slate-100 border border-slate-200 px-3 py-1 text-sm font-medium text-slate-600">
+                        Not registered
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Accounting period -->
+            <div class="flex items-start justify-between gap-4">
+
+                <div>
+                    <p class="text-sm font-medium text-slate-700">
+                        Accounting period
+                    </p>
+
+                    <p class="text-xs text-slate-500 mt-1">
+                        Current reporting period
+                    </p>
+                </div>
+
+                {% if current_period %}
+
+                    <div class="shrink-0 text-right">
+
+                        {% if current_period.is_closed %}
+
+                            <span class="inline-flex items-center rounded-lg bg-slate-100 border border-slate-200 px-3 py-1 text-sm font-medium text-slate-600">
+                                Closed
+                            </span>
+
+                        {% else %}
+
+                            <span class="inline-flex items-center rounded-lg bg-green-50 border border-green-200 px-3 py-1 text-sm font-medium text-green-700">
+                                Open
+                            </span>
+
+                        {% endif %}
+
+                        <p class="text-xs text-slate-500 mt-1">
+                            {{ current_period.name }}
+                        </p>
+
+                    </div>
+
+                {% else %}
+
+                    <span class="shrink-0 inline-flex items-center rounded-lg bg-orange-50 border border-orange-200 px-3 py-1 text-sm font-medium text-orange-700">
+                        No period
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- Footer -->
+        <div class="mt-6 pt-4 border-t border-slate-200">
+
+            <p class="text-xs text-slate-400">
+                These settings determine how transactions are posted to the ledger.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>

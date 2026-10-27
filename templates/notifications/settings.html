@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<main class="min-h-screen p-4 space-y-6">
+
+  <!-- Header -->
+  <header>
+    <h1 class="text-2xl font-bold">Notifications</h1>
+    <p class="text-sm text-gray-300">
+      Manage committee announcements and reminders
+    </p>
+  </header>
+
+  <!-- Devices summary -->
+  <section class=" p-4">
+    <h2 class="font-semibold">Your devices</h2>
+    <p class="text-sm text-gray-400">
+      You have {{ subscription_count }} device{{ subscription_count|pluralize }} subscribed.
+    </p>
+  </section>
+
+  <!-- This device toggle -->
+  {% include "notifications/snippets/push_toggle.html" %}
+
+</main>
+{% endblock %}
+

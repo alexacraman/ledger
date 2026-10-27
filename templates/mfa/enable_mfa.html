@@ -1,0 +1,55 @@
+<!-- templates/mfa/enable_mfa.html -->
+{% extends 'base.html' %}
+{% block content %}
+<!-- <nav aria-label="breadcrumb" class="w-full p-4 dark:bg-slate-800 dark:text-slate-500">
+	<ol class="flex h-8 space-x-2">
+		<li class="flex items-center">
+			<a rel="noopener noreferrer" href="{% url 'accounts:dashboard_view' %}" title="Back to homepage" class="hover:underline">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 pr-1 dark:text-gray-400">
+					<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+				</svg>
+			</a>
+		</li>
+    <li class="flex items-center space-x-2">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" fill="currentColor" class="w-2 h-2 mt-1 transform rotate-90 fill-current dark:text-gray-600">
+				<path d="M32 30.031h-32l16-28.061z"></path>
+			</svg>
+			<a rel="noopener noreferrer" href="{% url 'accounts:account_view' %}" class="flex items-center px-1 capitalize hover:underline">Account</a>
+		</li>
+   
+		<li class="flex items-center space-x-2">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" fill="currentColor" class="w-2 h-2 mt-1 transform rotate-90 fill-current dark:text-gray-600">
+				<path d="M32 30.031h-32l16-28.061z"></path>
+			</svg>
+			<a rel="noopener noreferrer" href="{% url 'mfa:mfa_settings' %}" class="flex items-center px-1 capitalize hover:underline">Multi Factor Authentication</a>
+		</li>
+        <li class="flex items-center space-x-2">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" fill="currentColor" class="w-2 h-2 mt-1 transform rotate-90 fill-current dark:text-gray-600">
+				<path d="M32 30.031h-32l16-28.061z"></path>
+			</svg>
+			<a rel="noopener noreferrer" href="#" class="flex items-center px-1 capitalize hover:underline">Set up Multi Factor Authentication</a>
+		</li>
+        
+	</ol>
+</nav> -->
+
+
+<div class="max-w-md mx-auto p-4 my-12">
+  <h2 class="text-lg font-bold mb-2">Scan this QR code with your authenticator app</h2>
+  <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="mb-4 border rounded" />
+  <p class="mb-4">After scanning, enter the 6-digit code from your app below to confirm MFA setup.</p>
+
+  <form method="POST" action="{% url 'mfa:enable_mfa' %}" class="space-y-4">
+    {% csrf_token %}
+    <label for="token" class="block text-sm font-medium">Authentication Code</label>
+    <input type="text" name="token" id="token" maxlength="6" pattern="\d{6}" required
+           class="w-full border border-gray-300 p-2 rounded-md shadow-sm text-slate-700" />
+
+    <div class="flex justify-center">
+ <button type="submit" class="outline outline-slate-400  px-6 py-2 rounded-xl hover:rounded-none hover:shadow-white hover:shadow-2xl mr-2 my-4">Verify and Enable MFA</button>
+    </div>
+   
+  </form>
+</div>
+{% endblock %}
+

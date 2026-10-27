@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto px-4 py-10">
+
+    <div class="mb-8">
+        <a
+            href="{% url 'banking:bank_account_detail' pk=bank_transaction.bank_account.pk %}"
+            class="text-sm font-medium text-[#224B75] hover:underline"
+        >
+            ← Back to bank account
+        </a>
+
+        <h1 class="mt-4 text-2xl font-bold text-slate-900">
+            Create accounting transaction
+        </h1>
+
+        <p class="mt-2 text-sm text-slate-600">
+            Record this bank transaction in the accounting ledger and
+            reconcile it automatically.
+        </p>
+    </div>
+
+
+    <!-- Bank transaction -->
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm mb-6">
+
+        <div class="flex items-start justify-between gap-6">
+
+            <div>
+                <p class="text-sm text-slate-500">
+                    Bank transaction
+                </p>
+
+                <h2 class="mt-1 text-lg font-semibold text-slate-900">
+                    {{ bank_transaction.description }}
+                </h2>
+
+                {% if bank_transaction.transaction_type %}
+                    <p class="mt-1 text-sm text-slate-500">
+                        {{ bank_transaction.transaction_type }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="text-right">
+                <p
+                    class="text-2xl font-bold
+                    {% if bank_transaction.amount > 0 %}
+                        text-green-700
+                    {% else %}
+                        text-red-700
+                    {% endif %}"
+                >
+                    £{{ bank_transaction.amount|floatformat:2 }}
+                </p>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    {{ bank_transaction.transaction_date|date:"d M Y" }}
+                </p>
+            </div>
+
+        </div>
+
+        {% if bank_transaction.reference %}
+            <div class="mt-5 border-t border-slate-100 pt-4">
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Reference
+                </p>
+
+                <p class="mt-1 text-sm text-slate-900">
+                    {{ bank_transaction.reference }}
+                </p>
+            </div>
+        {% endif %}
+
+    </div>
+
+
+    <!-- Accounting -->
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+
+        <div class="mb-6">
+
+            {% if bank_transaction.amount > 0 %}
+
+                <h2 class="text-lg font-semibold text-slate-900">
+                    Record income
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-600">
+                    Choose the revenue account this payment belongs to.
+                </p>
+
+            {% else %}
+
+                <h2 class="text-lg font-semibold text-slate-900">
+                    Record expense
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-600">
+                    Choose the expense account this payment belongs to.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <form method="post" class="space-y-6">
+
+            {% csrf_token %}
+
+            <div>
+                <label
+                    for="{{ form.counterpart_account.id_for_label }}"
+                    class="block text-sm font-medium text-slate-700 mb-2"
+                >
+                    Account
+                </label>
+
+                {{ form.counterpart_account }}
+
+                {% if form.counterpart_account.errors %}
+                    <div class="mt-2 text-sm text-red-600">
+                        {{ form.counterpart_account.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+
+            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+
+                {% if bank_transaction.amount > 0 %}
+
+                    <p class="text-sm text-slate-700">
+                        This will create:
+                    </p>
+
+                    <div class="mt-3 space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">
+                                Bank
+                            </span>
+                            <span class="font-medium text-slate-900">
+                                Dr £{{ bank_transaction.amount|floatformat:2 }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">
+                                Selected revenue account
+                            </span>
+                            <span class="font-medium text-slate-900">
+                                Cr £{{ bank_transaction.amount|floatformat:2 }}
+                            </span>
+                        </div>
+                    </div>
+
+                {% else %}
+
+                    <p class="text-sm text-slate-700">
+                        This will create:
+                    </p>
+
+                    <div class="mt-3 space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">
+                                Selected expense account
+                            </span>
+                            <span class="font-medium text-slate-900">
+                                Dr £{{ bank_transaction.absolute_amount|floatformat:2 }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">
+                                Bank
+                            </span>
+                            <span class="font-medium text-slate-900">
+                                Cr £{{ bank_transaction.absolute_amount|floatformat:2 }}
+                            </span>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="flex items-center justify-end gap-3">
+
+                <a
+                    href="{% url 'banking:bank_account_detail' pk=bank_transaction.bank_account.pk %}"
+                    class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="rounded-lg bg-[#224B75] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1b3d60]"
+                >
+                    Create & reconcile
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

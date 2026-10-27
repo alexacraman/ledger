@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% url 'password_reset' as password_reset_url %}
+
+<div class="my-24 mx-auto max-w-md px-4">
+  <!-- Card Container -->
+  <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl sm:p-10">
+    
+    <!-- Title Area -->
+    <div class="mb-8 text-center">
+      <div class="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-2xl">
+        💸
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Welcome Back</h1>
+      <p class="mt-2 text-sm text-slate-500">Log in to manage your cash flow</p>
+    </div>
+
+    <!-- Form Section -->
+    <form method="POST" autocomplete="off" class="form space-y-5">
+      {% csrf_token %}
+      
+      <!-- Django Form Output Wrapper -->
+      <!-- Note: If you have custom form widgets, make sure inputs use standard Tailwind classes like: 
+           "w-full rounded-xl border-slate-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 text-slate-900" -->
+      <div class="text-slate-900">
+        {{ form }}
+      </div>
+      
+      <!-- Helper Actions Row -->
+      <section class="flex items-center justify-between text-sm">
+        <!-- Show/Hide Password Toggle -->
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="showPassword" class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+          <label for="showPassword" class="text-slate-600 cursor-pointer hover:text-slate-900" title="Toggle password visibility">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+          </label>
+        </div>
+        
+        <!-- Forgot Password Link -->
+        <div>
+          <a rel="noopener noreferrer" href="{{ password_reset_url }}" class="font-medium text-emerald-600 hover:text-emerald-500 transition-colors">
+            Forgot Password?
+          </a>
+        </div>
+      </section>
+     
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
+      
+      <!-- Submission Action -->
+      <div class="pt-2">
+        <button type="submit" value="Login" class="w-full rounded-xl bg-emerald-600 py-3 text-base font-semibold text-white shadow-md transition-all hover:bg-emerald-500 hover:shadow-lg focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 cursor-pointer" >
+          Log in
+        </button>
+      </div>
+    </form>
+    
+    <!-- Error State Box -->
+    {% if form.errors %}
+      <div class="mt-6 rounded-xl bg-rose-50 border border-rose-100 p-4">
+        <p class="text-sm font-medium text-rose-600">Your email and password didn't match. Please try again.</p>
+      </div>
+    {% endif %}
+    
+  </div>
+</div>
+
+<script>
+  const showPassword = document.querySelector('#showPassword');
+  const passwordEl   = document.querySelector('#id_password');
+  if(showPassword && passwordEl){
+    showPassword.addEventListener('click', () => {
+      passwordEl.type = showPassword.checked ? 'text' : 'password';
+    });
+  }
+</script>
+{% endblock %}

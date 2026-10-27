@@ -1,0 +1,42 @@
+<div class="rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm">
+
+    <div>
+        <p class="text-sm font-medium text-gray-500">
+            Drafts
+        </p>
+
+        <p class="mt-2 text-3xl font-bold text-gray-900">
+            {{ document_data.drafts.invoices|add:document_data.drafts.purchases|add:document_data.drafts.expenses }}
+        </p>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Documents requiring attention
+        </p>
+    </div>
+
+    <div class="mt-5 space-y-2 text-sm">
+
+        <div class="flex justify-between">
+            <span class="text-gray-600">Invoices</span>
+            <span class="font-semibold text-gray-900">
+                {{ document_data.drafts.invoices }}
+            </span>
+        </div>
+
+        <div class="flex justify-between">
+            <span class="text-gray-600">Purchases</span>
+            <span class="font-semibold text-gray-900">
+                {{ document_data.drafts.purchases }}
+            </span>
+        </div>
+
+        <div class="flex justify-between">
+            <span class="text-gray-600">Expenses</span>
+            <span class="font-semibold text-gray-900">
+                {{ document_data.drafts.expenses }}
+            </span>
+        </div>
+
+    </div>
+
+</div>

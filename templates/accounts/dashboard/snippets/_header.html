@@ -1,0 +1,47 @@
+<div class="mb-6">
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+
+        <!-- Dashboard heading -->
+        <div>
+            <p class="text-sm 2xl:text-base font-medium text-sky-600 mb-1">
+                Bookkeeping
+            </p>
+
+            <h1 class="text-2xl 2xl:text-3xl font-semibold text-slate-900">
+                Dashboard
+            </h1>
+
+            {% if settings and settings.business_name %}
+                <p class="text-sm 2xl:text-base text-slate-500 mt-1">
+                    {{ settings.business_name }}
+                </p>
+            {% endif %}
+        </div>
+
+
+        <!-- Current accounting period -->
+        {% if current_period %}
+            <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+
+                <p class="text-xs uppercase tracking-wide font-semibold text-slate-400">
+                    Current accounting period
+                </p>
+
+                <p class="text-sm 2xl:text-base font-semibold text-slate-800 mt-1">
+                    {{ current_period.name }}
+                </p>
+
+                <p class="text-xs 2xl:text-sm text-slate-500 mt-0.5">
+                    {{ current_period.start_date|date:"j M Y" }}
+                    &ndash;
+                    {{ current_period.end_date|date:"j M Y" }}
+                </p>
+                <a href="{% url 'accounts:period_list' %}" class="text-xs text-slate-500 italic">View Periods</a>
+            </div>
+        {% endif %}
+        
+
+    </div>
+
+</div>

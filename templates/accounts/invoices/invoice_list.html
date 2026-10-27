@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Invoices
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Manage customer invoices and payments.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'accounts:invoice_create' %}"
+            class="inline-flex items-center justify-center rounded-lg bg-[#224B75] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1b3d60]"
+        >
+            New Invoice
+        </a>
+    </div>
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+
+                <thead class="bg-gray-50 dark:bg-slate-900/50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Invoice
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Customer
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Issue date
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Due date
+                        </th>
+
+                        <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Total
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+
+                    {% for invoice in invoices %}
+
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50">
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a
+                                    href="{% url 'accounts:invoice_detail' invoice.pk %}"
+                                    class="font-semibold text-[#224B75] hover:underline dark:text-blue-400"
+                                >
+                                    {{ invoice.invoice_number }}
+                                </a>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
+                                {{ invoice.customer.name }}
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                {{ invoice.issue_date|date:"d/m/Y" }}
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                {{ invoice.due_date|date:"d/m/Y" }}
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900 dark:text-white">
+                                £{{ invoice.total_gross|floatformat:2 }}
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold
+                                    {% if invoice.status == 'DRAFT' %}
+                                        bg-gray-100 text-gray-700
+                                    {% elif invoice.status == 'PAID' %}
+                                        bg-green-100 text-green-700
+                                    {% elif invoice.status == 'PARTIAL' %}
+                                        bg-yellow-100 text-yellow-700
+                                    {% elif invoice.status == 'VOID' %}
+                                        bg-red-100 text-red-700
+                                    {% else %}
+                                        bg-blue-100 text-blue-700
+                                    {% endif %}
+                                ">
+                                    {{ invoice.get_status_display }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td
+                                colspan="6"
+                                class="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+                            >
+                                No invoices have been created yet.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

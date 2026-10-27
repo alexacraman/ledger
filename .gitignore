@@ -1,0 +1,63 @@
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local configuration files
+/settings/*.py
+
+# Django development settings
+*.sqlite3
+*.db
+
+# Logs and databases
+*.log
+*.sql3
+
+# Static files
+/static/
+
+# Media files
+/media/
+
+# Virtual environment
+venv/
+env/
+
+# IDE files
+.vscode/
+.idea/
+
+# Ignore pipenv virtual environment
+Pipfile
+Pipfile.lock
+
+# Ignore local configuration files
+base.py
+pro.py
+local.py 
+
+# Ignore environment variable file
+.env
+
+# Node.js
+node_modules/
+
+# npm
+package-lock.json
+package.json
+
+#tailwind
+postcss.config.js
+tailwind.config.js
+
+# Docker
+Dockerfile
+
+#fly
+fly.toml
+
+#26
+26

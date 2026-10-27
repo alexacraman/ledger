@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<main class="min-h-screen  p-4 ">
+    <header>
+        <h1 class="text-2xl font-bold">Broadcast Centre</h1>
+        <p class="text-sm text-gray-300">
+            Send announcements to all subscribed members
+        </p>
+    </header>
+    <div class="max-w-md mx-auto sm:p-6">
+            <section class="rounded-2xl p-4 space-y-4 max-w-sm bg-gray-50 text-slate-400 border border-slate-400">
+                <h2 class="font-semibold text-center">Notification</h2>
+                <form method="POST" class="space-y-4" id="broadcastForm">
+                    {% csrf_token %}
+                    {{ form }}
+                    <div class="flex justify-center items-center">
+                        <button type="submit" id="sendBtn" class="bg-blue-700 border border-slate-400 text-white h-12 w-12 rounded-full hover:cursor-pointer">Send</button>
+                    </div> 
+                </form>
+            </section>
+    </div>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('id_url');
+  const form = document.getElementById('broadcastForm');
+
+  function normalisePath(value) {
+    if (!value) return '';
+    value = value.trim();
+    try {
+      const url = new URL(value);
+      value = url.pathname;
+    } catch (err) {}
+    if (!value.startsWith('/')) value = '/' + value;
+    return value;
+  }
+
+  function isValidPath(value) {
+    return /^\/[a-zA-Z0-9\-_/]*$/.test(value);
+  }
+
+  function showError(msg) {
+    input.classList.add('border-red-500');
+    input.setCustomValidity(msg);
+    input.reportValidity();
+  }
+
+  function clearError() {
+    input.classList.remove('border-red-500');
+    input.setCustomValidity('');
+  }
+
+  input.addEventListener('input', clearError);
+  input.addEventListener('blur', () => {
+    input.value = normalisePath(input.value);
+    if (input.value && !isValidPath(input.value)) {
+      showError('Enter a valid relative path (e.g. /events/3/)');
+    } else {
+      clearError();
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    input.value = normalisePath(input.value);
+    if (!input.value || !isValidPath(input.value)) {
+      showError('Enter a valid relative path (e.g. /events/3/)');
+      return;
+    }
+    clearError();
+    // Use requestSubmit so the normal submit event flow runs
+    form.submit();
+  });
+});
+</script>
+{% endblock content %}

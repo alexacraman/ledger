@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-lg font-bold text-center my-12">Enter your MFA code</h2>
+<div class="flex justify-center my-12 sm:my-24 lg:my-32 xl:my-44">
+    <form method="POST" id="mfaForm">
+      {% csrf_token %}
+
+      <!-- OTP inputs -->
+      <div id="otpWrapper" class="flex gap-2">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-box">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-box">
+      </div>
+
+      <!-- Back up code -->
+      <div id="backupWrapper" class="hidden">
+        <input type="text"id="backupInput"class="rounded p-2 outline"placeholder="Enter backup code">
+      </div>
+
+      <!--form -->
+      {{ form.token.as_hidden }}
+      <div class="flex justify-center">
+          <button type="button" id="toggleBackup" class="text-sm underline mt-4">Use backup code instead</button>
+      </div>
+    
+      <div class="flex justify-center my-12">
+        <button type="submit" class="btn-primary">Verify</button>
+      </div>
+  </form>
+</div>
+<script>
+  const otpBoxes = document.querySelectorAll('.otp-box');
+const hiddenToken = document.getElementById('id_token');
+const form = document.getElementById('mfaForm');
+
+const otpWrapper = document.getElementById('otpWrapper');
+const backupWrapper = document.getElementById('backupWrapper');
+const backupInput = document.getElementById('backupInput');
+const toggleButton = document.getElementById('toggleBackup');
+
+let backupMode = false;
+
+
+/* AUTO ADVANCE */
+otpBoxes.forEach((box, index) => {
+  box.addEventListener('input', () => {
+    box.value = box.value.replace(/\D/g, '');
+
+    if (box.value && otpBoxes[index + 1]) {
+      otpBoxes[index + 1].focus();
+    }
+
+  });
+
+  box.addEventListener('keydown', (event) => {
+
+    if (event.key === 'Backspace' && !box.value && otpBoxes[index - 1]) {
+      otpBoxes[index - 1].focus();
+    }
+
+  });
+
+});
+
+
+/* Toggle form */
+toggleButton.addEventListener('click', () => {
+  backupMode = !backupMode;
+  otpWrapper.classList.toggle('hidden');
+  backupWrapper.classList.toggle('hidden');
+
+  toggleButton.textContent = backupMode
+    ? 'Use authenticator code instead'
+    : 'Use backup code instead';
+
+});
+
+form.addEventListener('submit', () => {
+  if (backupMode) {
+    hiddenToken.value = backupInput.value.trim();
+  } else {
+    hiddenToken.value = [...otpBoxes]
+      .map(box => box.value)
+      .join('');
+  }
+});
+</script>
+{% endblock %}
+

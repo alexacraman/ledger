@@ -1,0 +1,15 @@
+ <div class="flex items-center justify-end gap-4 px-5 py-3 bg-slate-50 border-t border-slate-200">
+
+                   <a href="{% url 'record:record_update' record.pk %}?page={{ page_obj.number }}&year={{ selected_year }}&month={{ selected_month }}"
+   class="text-sm font-medium text-[#224B75] hover:text-[#1b3d60] transition">
+    Edit
+</a>
+
+                    <span class="text-slate-300">|</span>
+
+                    <a href="{% url 'record:record_delete' record.pk %}"
+                       class="text-sm font-medium text-rose-600 hover:text-rose-700 transition">
+                        Delete
+                    </a>
+
+                </div>

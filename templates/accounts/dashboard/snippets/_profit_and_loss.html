@@ -1,0 +1,92 @@
+<section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-slate-200">
+
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+
+            <div>
+                <h2 class="text-xl 2xl:text-2xl font-semibold text-slate-900">
+                    Profit &amp; Loss
+                </h2>
+
+                <p class="text-sm 2xl:text-base text-slate-500 mt-1">
+                    Financial performance for the current accounting period
+                </p>
+            </div>
+
+            <a
+                href="{% url 'accounts:profit_and_loss' %}"
+                class="text-sm font-medium text-sky-600 hover:text-sky-700"
+            >
+                View report
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Financial figures -->
+    <div class="p-6">
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+            <!-- Income -->
+            <div class="rounded-xl border border-sky-200 bg-sky-50 p-5">
+
+                <p class="text-sm 2xl:text-base text-slate-500">
+                    Income
+                </p>
+
+                <p class="mt-2 text-2xl 2xl:text-3xl font-semibold text-slate-900">
+                    £{{ profit_loss.income|floatformat:2 }}
+                </p>
+
+            </div>
+
+
+            <!-- Expenses -->
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-5">
+
+                <p class="text-sm 2xl:text-base text-slate-500">
+                    Expenses
+                </p>
+
+                <p class="mt-2 text-2xl 2xl:text-3xl font-semibold text-slate-900">
+                    £{{ profit_loss.expenses|floatformat:2 }}
+                </p>
+
+            </div>
+
+
+            <!-- Net profit -->
+            <div class="rounded-xl border border-green-200 bg-green-50 p-5">
+
+                <p class="text-sm 2xl:text-base text-slate-500">
+                    Net profit
+                </p>
+
+                <p class="mt-2 text-2xl 2xl:text-3xl font-semibold text-slate-900">
+                    £{{ profit_loss.net_profit|floatformat:2 }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Period -->
+        <div class="mt-4 pt-4 border-t border-slate-200">
+
+            <p class="text-xs 2xl:text-sm text-slate-500">
+                {{ profit_loss.date_from|date:"j M Y" }}
+                &ndash;
+                {{ profit_loss.date_to|date:"j M Y" }}
+            </p>
+
+        </div>
+
+    </div>
+
+</section>

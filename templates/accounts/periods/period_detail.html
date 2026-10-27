@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between mb-8">
+
+        <div>
+            <a
+                href="{% url 'accounts:period_list' %}"
+                class="text-sm text-[#224B75] hover:underline"
+            >
+                ← Accounting periods
+            </a>
+
+            <h1 class="text-2xl font-bold text-gray-900 mt-2">
+                {{ period.name }}
+            </h1>
+
+            <p class="text-gray-600 mt-1">
+                {{ period.start_date|date:"j M Y" }}
+                –
+                {{ period.end_date|date:"j M Y" }}
+            </p>
+        </div>
+
+        <div>
+
+            {% if period.is_closed %}
+
+                <span class="inline-flex rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700">
+                    Closed
+                </span>
+
+            {% else %}
+
+                <form
+                    method="post"
+                    action="{% url 'accounts:period_close' period.pk %}"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        onclick="return confirm('Close {{ period.name }}? No further journal entries can be posted to this period.')"
+                        class="rounded-lg bg-[#224B75] px-5 py-2.5 text-sm font-medium text-white hover:opacity-90"
+                    >
+                        Close period
+                    </button>
+                </form>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <p class="text-sm text-gray-500">
+                Start date
+            </p>
+
+            <p class="mt-2 text-lg font-semibold text-gray-900">
+                {{ period.start_date|date:"j M Y" }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <p class="text-sm text-gray-500">
+                End date
+            </p>
+
+            <p class="mt-2 text-lg font-semibold text-gray-900">
+                {{ period.end_date|date:"j M Y" }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <p class="text-sm text-gray-500">
+                Posted journal entries
+            </p>
+
+            <p class="mt-2 text-lg font-semibold text-gray-900">
+                {{ entries|length }}
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h2 class="font-semibold text-gray-900">
+                Posted journal entries
+            </h2>
+        </div>
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full text-sm">
+
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="text-left px-6 py-4 font-semibold text-gray-700">
+                            Date
+                        </th>
+
+                        <th class="text-left px-6 py-4 font-semibold text-gray-700">
+                            Description
+                        </th>
+
+                        <th class="text-left px-6 py-4 font-semibold text-gray-700">
+                            Reference
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200">
+
+                    {% for entry in entries %}
+
+                        <tr class="hover:bg-gray-50">
+
+                            <td class="px-6 py-4 text-gray-700">
+                                {{ entry.transaction_date|date:"j M Y" }}
+                            </td>
+
+                            <td class="px-6 py-4 text-gray-900">
+                                {{ entry.description }}
+                            </td>
+
+                            <td class="px-6 py-4 text-gray-700">
+                                {{ entry.reference|default:"—" }}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td
+                                colspan="3"
+                                class="px-6 py-10 text-center text-gray-500"
+                            >
+                                No posted journal entries in this period.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

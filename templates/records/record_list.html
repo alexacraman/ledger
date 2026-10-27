@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Records{% endblock %}
+{% block content %}
+<main class="p-6">
+    <a href="{% url 'record:work_report' %}"
+   class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold text-[#224B75] bg-white border border-slate-300 hover:bg-slate-50 transition">
+    Download Work Report
+</a>
+    <section class="max-w-7xl mx-auto">
+        <!-- Page Header -->
+        <header class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden p-6 my-6">
+            <section class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                <!-- Title -->
+                {% include 'records/snippets/title.html' %}
+                <!-- Summary + Action -->
+                {% include 'records/snippets/summary.html' %}
+            </section>
+            {% include 'records/snippets/search.html' %}
+        </header>
+        <!-- Records -->
+        <article class="space-y-4">
+            {% for record in records %}
+                <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                    <!-- Record Header -->
+                {% include 'records/snippets/table_head.html' %}
+                    <!-- Record Content -->
+                    {% include 'records/snippets/table_content.html' %}
+                    <!-- Actions -->
+                {% include 'records/snippets/actions.html' %}
+                </div>
+            {% empty %}
+                <!-- Empty State -->
+            {% include 'records/snippets/empty.html' %}
+            {% endfor %}
+        </article>
+        {% include 'paginate/paginate.html' %}
+    </section>
+</main>
+{% endblock content %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">
+            Accounting periods
+        </h1>
+
+        <p class="text-gray-600 mt-1">
+            Manage your accounting and tax-year periods.
+        </p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full text-sm">
+
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="text-left px-6 py-4 font-semibold text-gray-700">
+                            Period
+                        </th>
+
+                        <th class="text-left px-6 py-4 font-semibold text-gray-700">
+                            Start
+                        </th>
+
+                        <th class="text-left px-6 py-4 font-semibold text-gray-700">
+                            End
+                        </th>
+
+                        <th class="text-left px-6 py-4 font-semibold text-gray-700">
+                            Status
+                        </th>
+
+                        <th class="text-right px-6 py-4 font-semibold text-gray-700">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200">
+
+                    {% for period in periods %}
+
+                        <tr class="hover:bg-gray-50">
+
+                            <td class="px-6 py-4">
+                                <a
+                                    href="{% url 'accounts:period_detail' period.pk %}"
+                                    class="font-medium text-[#224B75] hover:underline"
+                                >
+                                    {{ period.name }}
+                                </a>
+                            </td>
+
+                            <td class="px-6 py-4 text-gray-700">
+                                {{ period.start_date|date:"j M Y" }}
+                            </td>
+
+                            <td class="px-6 py-4 text-gray-700">
+                                {{ period.end_date|date:"j M Y" }}
+                            </td>
+
+                            <td class="px-6 py-4">
+
+                                {% if period.is_closed %}
+
+                                    <span class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                                        Closed
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+                                        Open
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td class="px-6 py-4 text-right">
+                                <a
+                                    href="{% url 'accounts:period_detail' period.pk %}"
+                                    class="font-medium text-[#224B75] hover:underline"
+                                >
+                                    View
+                                </a>
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="px-6 py-10 text-center text-gray-500"
+                            >
+                                No accounting periods have been created yet.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

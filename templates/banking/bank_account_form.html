@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="mb-6">
+
+        <h1 class="text-2xl font-bold text-gray-900">
+            {{ page_title }}
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Link a real-world bank account to its accounting ledger account.
+        </p>
+
+    </div>
+
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+
+                <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
+                    {% for error in form.non_field_errors %}
+                        <p class="text-sm text-red-700">
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+
+
+            <div class="space-y-6">
+
+                <div>
+
+                    <label
+                        for="{{ form.name.id_for_label }}"
+                        class="mb-2 block text-sm font-medium text-gray-700"
+                    >
+                        Bank account name
+                    </label>
+
+                    {{ form.name }}
+
+                    {% for error in form.name.errors %}
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        for="{{ form.account.id_for_label }}"
+                        class="mb-2 block text-sm font-medium text-gray-700"
+                    >
+                        Accounting account
+                    </label>
+
+                    {{ form.account }}
+
+                    <p class="mt-1 text-xs text-gray-500">
+                        Select the Asset account in your ledger that represents this bank account.
+                    </p>
+
+                    {% for error in form.account.errors %}
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="flex items-center gap-3">
+
+                    {{ form.is_active }}
+
+                    <label
+                        for="{{ form.is_active.id_for_label }}"
+                        class="text-sm font-medium text-gray-700"
+                    >
+                        Active bank account
+                    </label>
+
+                </div>
+
+                {% for error in form.is_active.errors %}
+                    <p class="text-sm text-red-600">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+
+            </div>
+
+
+            <div class="mt-8 flex flex-wrap gap-3">
+
+                <button
+                    type="submit"
+                    class="rounded-lg bg-[#224B75] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1b3d60]"
+                >
+                    Save bank account
+                </button>
+
+                <a
+                    href="{% if bank_account %}{% url 'banking:bank_account_detail' bank_account.pk %}{% else %}{% url 'banking:bank_account_list' %}{% endif %}"
+                    class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

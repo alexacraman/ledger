@@ -1,0 +1,46 @@
+ <div class="px-5 py-4 border-b border-slate-200">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <h2 class="text-lg font-semibold text-slate-500">
+                                    {{ record.project }}
+                                </h2>
+
+                                {% if record.status == 'COMPLETED' %}
+                                    <span class="inline-flex items-center px-4.5 py-2 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">
+                                        Completed
+                                    </span>
+                                {% elif record.status == 'IN_PROGRESS' %}
+                                    <span class="inline-flex items-center px-4.5 py-2 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
+                                        In Progress
+                                    </span>
+                                {% elif record.status == 'BLOCKED' %}
+                                    <span class="inline-flex items-center px-4.5 py-2 rounded-full text-xs font-medium bg-rose-50 text-rose-700">
+                                        Blocked
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-4.5 py-2 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                                        {{ record.get_status_display }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <p class="mt-1 text-sm text-slate-500">
+                                {{ record.date|date:"d M Y" }}
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
+                                    Duration
+                                </p>
+                                <p class="text-lg font-semibold text-slate-500">
+                                    {{ record.formatted_duration }} 
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>

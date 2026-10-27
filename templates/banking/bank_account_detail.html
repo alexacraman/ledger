@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Header -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
+
+        <div>
+            <div class="flex items-center gap-3">
+
+                <h1 class="text-2xl font-bold text-gray-900">
+                    {{ bank_account.name }}
+                </h1>
+
+                {% if bank_account.is_active %}
+                    <span class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                        Active
+                    </span>
+                {% else %}
+                    <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                        Inactive
+                    </span>
+                {% endif %}
+
+            </div>
+
+            <p class="mt-1 text-sm text-gray-500">
+                {{ bank_account.account.code }} - {{ bank_account.account.name }}
+            </p>
+        </div>
+
+
+        <div class="flex flex-wrap gap-3">
+
+            <a
+                href="{% url 'banking:bank_statement_import' %}"
+                class="rounded-lg bg-[#224B75] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1b3d60]"
+            >
+                Import statement
+            </a>
+
+            <a
+                href="{% url 'banking:bank_account_update' pk=bank_account.pk %}"
+                class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            >
+                Edit
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Summary cards -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+
+        <!-- Transactions -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-medium text-gray-500">
+                Transactions
+            </p>
+
+            <p class="mt-2 text-2xl font-bold text-gray-900">
+                {{ transaction_count }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Imported or entered
+            </p>
+
+        </div>
+
+
+        <!-- Reconciled -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-medium text-gray-500">
+                Reconciled
+            </p>
+
+            <p class="mt-2 text-2xl font-bold text-gray-900">
+                {{ reconciled_count }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Matched to the ledger
+            </p>
+
+        </div>
+
+
+        <!-- Unreconciled -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-medium text-gray-500">
+                Unreconciled
+            </p>
+
+            <p class="mt-2 text-2xl font-bold {% if unreconciled_count %}text-amber-600{% else %}text-gray-900{% endif %}">
+                {{ unreconciled_count }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Need attention
+            </p>
+
+        </div>
+
+
+        <!-- Ledger account -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-medium text-gray-500">
+                Ledger account
+            </p>
+
+            <p class="mt-2 text-xl font-bold text-gray-900">
+                {{ bank_account.account.code }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+                {{ bank_account.account.name }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Reconciliation status -->
+    {% if unreconciled_count %}
+
+        <div class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+                <div>
+                    <h2 class="text-sm font-semibold text-amber-900">
+                        {{ unreconciled_count }} transaction{% if unreconciled_count != 1 %}s{% endif %} awaiting reconciliation
+                    </h2>
+
+                    <p class="mt-1 text-sm text-amber-800">
+                        Imported transactions have not yet been matched to an accounting entry.
+                    </p>
+                </div>
+
+                <span class="inline-flex shrink-0 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-amber-700 border border-amber-200">
+                    Reconciliation required
+                </span>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="mb-8 rounded-2xl border border-green-200 bg-green-50 p-5">
+
+            <h2 class="text-sm font-semibold text-green-900">
+                All transactions reconciled
+            </h2>
+
+            <p class="mt-1 text-sm text-green-800">
+                There are no unreconciled bank transactions on this account.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- Transactions -->
+   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900">
+                Bank transactions
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Imported transactions and their accounting status.
+            </p>
+        </div>
+    </div>
+
+    {% if transactions %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th
+                            scope="col"
+                            class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                        >
+                            Date
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                        >
+                            Description
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                        >
+                            Reference
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"
+                        >
+                            Amount
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500"
+                        >
+                            Status
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"
+                        >
+                            Accounting
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200 bg-white">
+                    {% for transaction in transactions %}
+                        <tr class="hover:bg-gray-50">
+
+                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
+                                {{ transaction.transaction_date|date:"d M Y" }}
+                            </td>
+
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <div class="font-medium">
+                                    {{ transaction.description }}
+                                </div>
+
+                                {% if transaction.transaction_type %}
+                                    <div class="mt-1 text-xs text-gray-500">
+                                        {{ transaction.transaction_type }}
+                                    </div>
+                                {% endif %}
+                            </td>
+
+                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                                {% if transaction.reference %}
+                                    {{ transaction.reference }}
+                                {% else %}
+                                    <span class="text-gray-400">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                                {% if transaction.amount > 0 %}
+                                    <span class="text-green-700">
+                                        +£{{ transaction.amount|floatformat:2 }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-red-700">
+                                        -£{{ transaction.amount|stringformat:"s"|slice:"1:" }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td class="whitespace-nowrap px-6 py-4 text-center">
+                                {% if transaction.reconciled %}
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700"
+                                    >
+                                        Reconciled
+                                    </span>
+                                {% else %}
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700"
+                                    >
+                                        Unreconciled
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td class="px-6 py-4 text-right">
+                                {% if transaction.reconciled %}
+                                    {% if transaction.journal_entry %}
+                                        <a
+                                            href="{% url 'accounts:transaction_detail' pk=transaction.journal_entry.pk %}"
+                                            class="text-sm font-semibold text-[#224B75] hover:underline"
+                                        >
+                                            View transaction
+                                        </a>
+                                    {% else %}
+                                        <span class="text-sm text-gray-400">
+                                            Reconciled
+                                        </span>
+                                    {% endif %}
+                              
+{% else %}
+    <div class="flex items-center justify-end gap-2">
+
+       
+
+        <a
+            href="{% url 'banking:bank_transaction_reconcile' pk=transaction.pk %}"
+            class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+        >
+            Match existing
+        </a>
+
+        <a
+            href="{% url 'banking:bank_transaction_create' pk=transaction.pk %}"
+            class="inline-flex items-center rounded-lg bg-[#224B75] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1b3d60]"
+        >
+            Create transaction
+        </a>
+
+    </div>
+{% endif %}
+
+
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="px-6 py-12 text-center">
+            <h3 class="text-sm font-semibold text-gray-900">
+                No bank transactions
+            </h3>
+
+            <p class="mt-2 text-sm text-gray-500">
+                Import a bank statement to add transactions to this account.
+            </p>
+                {{ bank_account.pk }}
+            <div class="mt-6">
+                <a
+                    href="{% url 'banking:bank_statement_import' %}"
+                    class="inline-flex items-center rounded-lg bg-[#224B75] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1b3d60]"
+                >
+                    Import statement
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+
+    <!-- Footer -->
+    <div class="mt-6">
+
+        <a
+            href="{% url 'banking:bank_account_list' %}"
+            class="text-sm font-medium text-[#224B75] hover:underline"
+        >
+            ← Back to bank accounts
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

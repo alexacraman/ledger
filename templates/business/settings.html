@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">
+            Business settings
+        </h1>
+
+        <p class="mt-1 text-gray-600">
+            Configure your business and accounting settings.
+        </p>
+    </div>
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+
+            <h2 class="text-lg font-semibold text-gray-900">
+                Business details
+            </h2>
+
+            <div class="mt-6">
+
+                <label
+                    for="{{ form.business_name.id_for_label }}"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                    Business name
+                </label>
+
+                {{ form.business_name }}
+
+                {% if form.business_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">
+                        {{ form.business_name.errors|striptags }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+
+            <div class="flex items-start justify-between gap-6">
+
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        Accounting
+                    </h2>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        Choose how your bookkeeping recognises income and expenses.
+                    </p>
+                </div>
+
+                {% if financial_activity_exists %}
+
+                    <span class="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                        Locked
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="mt-6">
+
+                <label
+                    for="{{ form.accounting_basis.id_for_label }}"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                    Accounting basis
+                </label>
+
+                {% if financial_activity_exists %}
+
+                    <select
+                        disabled
+                        class="w-full rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-gray-500"
+                    >
+                        {% for value, label in form.accounting_basis.field.choices %}
+                            <option
+                                value="{{ value }}"
+                                {% if value == form.instance.accounting_basis %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <input
+                        type="hidden"
+                        name="accounting_basis"
+                        value="{{ form.instance.accounting_basis }}"
+                    >
+
+                {% else %}
+
+                    {{ form.accounting_basis }}
+
+                {% endif %}
+
+                {% if form.accounting_basis.errors %}
+                    <p class="mt-2 text-sm text-red-600">
+                        {{ form.accounting_basis.errors|striptags }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+
+            <div class="flex items-start justify-between gap-6">
+
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        VAT
+                    </h2>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        Configure VAT registration and scheme.
+                    </p>
+                </div>
+
+                {% if financial_activity_exists %}
+
+                    <span class="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                        Registration locked
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="mt-6">
+
+                <label class="flex items-center gap-3">
+
+                    {% if financial_activity_exists %}
+
+                        <input
+                            type="checkbox"
+                            disabled
+                            {% if form.instance.vat_registered %}
+                                checked
+                            {% endif %}
+                            class="h-4 w-4 rounded border-gray-300"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="vat_registered"
+                            value="{% if form.instance.vat_registered %}on{% endif %}"
+                        >
+
+                    {% else %}
+
+                        {{ form.vat_registered }}
+
+                    {% endif %}
+
+                    <span class="text-sm font-medium text-gray-700">
+                        VAT registered
+                    </span>
+
+                </label>
+
+                {% if form.vat_registered.errors %}
+                    <p class="mt-2 text-sm text-red-600">
+                        {{ form.vat_registered.errors|striptags }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+
+            <div class="mt-6">
+
+                <label
+                    for="{{ form.vat_scheme.id_for_label }}"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                    VAT scheme
+                </label>
+
+                {{ form.vat_scheme }}
+
+                {% if form.vat_scheme.errors %}
+                    <p class="mt-2 text-sm text-red-600">
+                        {{ form.vat_scheme.errors|striptags }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="flex justify-end">
+
+            <button
+                type="submit"
+                class="rounded-lg bg-[#224B75] px-5 py-2.5 text-sm font-medium text-white hover:opacity-90"
+            >
+                Save settings
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

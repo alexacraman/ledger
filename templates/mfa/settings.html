@@ -1,0 +1,141 @@
+<!-- templates/mfa/settings.html -->
+{% extends 'base.html' %}
+{% block content %}
+<!-- <nav aria-label="breadcrumb" class="w-full p-4 dark:bg-slate-800 dark:text-slate-500">
+	<ol class="flex h-8 space-x-2">
+		<li class="flex items-center">
+			<a rel="noopener noreferrer" href="{% url 'accounts:dashboard_view' %}" title="Back to homepage" class="hover:underline">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 pr-1 dark:text-gray-400">
+					<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+				</svg>
+			</a>
+		</li>
+    <li class="flex items-center space-x-2">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" fill="currentColor" class="w-2 h-2 mt-1 transform rotate-90 fill-current dark:text-gray-600">
+				<path d="M32 30.031h-32l16-28.061z"></path>
+			</svg>
+			<a rel="noopener noreferrer" href="{% url 'accounts:account_view' %}" class="flex items-center px-1 capitalize hover:underline">Account</a>
+		</li>
+   
+		<li class="flex items-center space-x-2">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" fill="currentColor" class="w-2 h-2 mt-1 transform rotate-90 fill-current dark:text-gray-600">
+				<path d="M32 30.031h-32l16-28.061z"></path>
+			</svg>
+			<a rel="noopener noreferrer" href="#" class="flex items-center px-1 capitalize hover:underline">Multi Factor Authentication</a>
+		</li>
+        
+	</ol>
+</nav> -->
+
+
+<div class="max-w-7xl mx-auto my-12 p-4">
+  <h2 class="text-2xl text-center font-semibold mb-4">Multi-Factor Authentication Settings</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 justify-items-center border">
+    <section class="col-span-1">
+      <h3 class="text-lg font-medium mt-6 text-center underline">Backup Codes</h3>
+      {% if codes %}
+        <ul id="codesList" class=" mt-2 max-w-xs grid grid-cols-2 ">
+          {% for c in codes %}
+          <li class="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800 my-1 mr-1">
+                <div class="flex items-center justify-center px-2 bg-gray-400 text-gray-100">
+                  <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-safe2 w-6 h-6 inline" viewBox="0 0 16 16">
+                      <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h12A1.5 1.5 0 0 1 16 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 1 14.5V14H.5a.5.5 0 0 1 0-1H1V9H.5a.5.5 0 0 1 0-1H1V4H.5a.5.5 0 0 1 0-1H1zM2.5 2a.5.5 0 0 0-.5.5v12a.5.5 0 0 0 .5.5h12a.5.5 0 0 0 .5-.5v-12a.5.5 0 0 0-.5-.5z"/>
+                      <path d="M5.035 8h1.528q.072-.277.214-.516l-1.08-1.08A3.5 3.5 0 0 0 5.035 8m1.369-2.303 1.08 1.08q.24-.142.516-.214V5.035a3.5 3.5 0 0 0-1.596.662M9 5.035v1.528q.277.072.516.214l1.08-1.08A3.5 3.5 0 0 0 9 5.035m2.303 1.369-1.08 1.08q.142.24.214.516h1.528a3.5 3.5 0 0 0-.662-1.596M11.965 9h-1.528q-.072.277-.214.516l1.08 1.08A3.5 3.5 0 0 0 11.965 9m-1.369 2.303-1.08-1.08q-.24.142-.516.214v1.528a3.5 3.5 0 0 0 1.596-.662M8 11.965v-1.528a2 2 0 0 1-.516-.214l-1.08 1.08A3.5 3.5 0 0 0 8 11.965m-2.303-1.369 1.08-1.08A2 2 0 0 1 6.563 9H5.035c.085.593.319 1.138.662 1.596M4 8.5a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0m4.5-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+                  </svg>
+                </div>
+                <div class="flex items-center justify-between flex-1 p-3">
+                  <p class="tracking-wider">{{c}}</p>
+                </div>
+          </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      </section>
+
+    <section class="col-span-1">
+        <h3 class="text-lg font-medium mt-6 text-center underline">Status</h3>
+        Multi Factor Authentication 
+        {% if status == True %} 
+        <div class="flex justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" class="size-12">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+            </svg>
+        </div>
+        <div class="mt-6">
+          <a href="{% url 'mfa:disable_mfa' %}" class="text-red-600 underline text-xs">Disable MFA</a>
+        </div>
+        {% else %} 
+        
+          <div class="flex justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="size-12">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.25-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" />
+            </svg>
+          </div>
+          <p class="my-6 flex justify-center"> <a href="{% url 'mfa:enable_mfa' %}" class="outline outline-slate-400  px-6 py-2 rounded-xl hover:rounded-none hover:shadow-white hover:shadow-2xl mr-2">Set Up Multi-Factor</a></p> 
+      
+
+        {% endif %}
+    </section>
+
+    <section class="col-span-1">
+      <h3 class="text-lg font-medium mt-6 text-center underline ">Options</h3>
+       {% if status == True %} 
+      <p class="mt-6"><a href="{% url 'mfa:download_backup_codes' %}" class="outline outline-slate-400  px-6 py-2 rounded-xl hover:rounded-none hover:shadow-white hover:shadow-2xl">Download Backup Codes</a></p>
+   
+      <p class="mt-6"><a href="#" id="generateBackupCodes" class="outline outline-slate-400  px-6 py-2 rounded-xl hover:rounded-none hover:shadow-white hover:shadow-2xl" data-url="{% url 'mfa:generate_backup_codes' %}">{% if codes %} Regenerate Backup Codes {% else %} Generate Backup Codes {% endif %}</a></p>   
+      {% endif %}
+    </section>
+</div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded',()=>{
+    const generateBackupCodes = document.querySelector('#generateBackupCodes')
+    const codesList = document.querySelector('#codesList')
+    
+      generateBackupCodes.addEventListener('click',(event)=>{
+      const codesUrl = event.target.getAttribute('data-url')
+      getCodes(codesUrl)
+    })
+  
+    async function getCodes(url){
+      const myHeaders = new Headers()
+      myHeaders.append('Content-Type','application/json')
+      myHeaders.append('X-CSRFToken',csrftoken)
+      
+      const params = {
+        method: 'POST',
+        headers: myHeaders
+      }
+      try{
+        const response = await fetch(url, params)
+
+        const data = await response.json()
+
+        codesList.innerHTML = ''
+        data.codes.forEach((code)=>{
+
+          const html_ = 
+          `
+          <li class="flex overflow-hidden rounded-lg bg-gray-50 text-gray-800 my-1">
+                <div class="flex items-center justify-center px-2 bg-gray-400 text-gray-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                    </svg>
+                </div>
+                <div class="flex items-center justify-between flex-1 p-3">
+                  <p class="tracking-wider">${code}</p>
+                </div>
+          </li>
+          
+          `
+          codesList.insertAdjacentHTML('afterbegin', html_)
+        })
+      }catch(error){
+        console.error('Unable to obtain codes', error)
+      }
+      
+    }
+  })
+</script>
+{% endblock %}

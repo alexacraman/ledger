@@ -1,0 +1,172 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800">
+                Suppliers
+            </h1>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Manage your suppliers and their contact details.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+
+            {% if show_inactive %}
+                <a
+                    href="{% url 'contacts:supplier_list' %}"
+                    class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium
+                           text-slate-700 hover:bg-slate-50"
+                >
+                    Active suppliers
+                </a>
+            {% else %}
+                <a
+                    href="{% url 'contacts:supplier_list' %}?inactive=1"
+                    class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium
+                           text-slate-700 hover:bg-slate-50"
+                >
+                    Show inactive
+                </a>
+            {% endif %}
+
+            <a
+                href="{% url 'contacts:supplier_create' %}"
+                class="px-4 py-2 rounded-lg bg-sky-600 text-white text-sm font-medium
+                       hover:bg-sky-700"
+            >
+                Add supplier
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+
+        {% if suppliers %}
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full">
+
+                    <thead class="bg-slate-50 border-b border-slate-200">
+
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                                Supplier
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                                Email
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                                Phone
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                                Status
+                            </th>
+
+                            <th class="px-6 py-4"></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody class="divide-y divide-slate-200">
+
+                        {% for supplier in suppliers %}
+
+                            <tr class="hover:bg-slate-50">
+
+                                <td class="px-6 py-4">
+                                    <a
+                                        href="{% url 'contacts:supplier_detail' supplier.pk %}"
+                                        class="font-medium text-sky-700 hover:text-sky-900"
+                                    >
+                                        {{ supplier.name }}
+                                    </a>
+                                </td>
+
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    {{ supplier.email|default:"—" }}
+                                </td>
+
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    {{ supplier.phone|default:"—" }}
+                                </td>
+
+                                <td class="px-6 py-4">
+
+                                    {% if supplier.is_active %}
+                                        <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium
+                                                     bg-emerald-50 text-emerald-700">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium
+                                                     bg-slate-100 text-slate-600">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+
+                                </td>
+
+                                <td class="px-6 py-4 text-right">
+                                    <a
+                                        href="{% url 'contacts:supplier_detail' supplier.pk %}"
+                                        class="text-sm font-medium text-slate-600 hover:text-slate-900"
+                                    >
+                                        View
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="px-6 py-12 text-center">
+
+                <h2 class="text-lg font-semibold text-slate-700">
+                    No suppliers found
+                </h2>
+
+                <p class="mt-2 text-sm text-slate-500">
+                    Add your first supplier to get started.
+                </p>
+
+                <a
+                    href="{% url 'contacts:supplier_create' %}"
+                    class="inline-block mt-6 px-4 py-2 rounded-lg bg-sky-600 text-white
+                           text-sm font-medium hover:bg-sky-700"
+                >
+                    Add supplier
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+

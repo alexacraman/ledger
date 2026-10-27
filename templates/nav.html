@@ -1,0 +1,55 @@
+{% url 'login' as login_url %}
+{% url 'logout' as logout_url %}
+{% url 'password_change' as password_change_url %}
+{% url 'password_reset' as password_reset_url %}
+<nav class="border-b border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+            {% if user.is_authenticated %}
+            <!-- Main navigation -->
+            <div class="flex items-center gap-1">
+                <a href="{% url 'accounts:dashboard' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white" > Dashboard </a>
+                <!-- Contacts -->
+                <div class="relative group">
+                    <button type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white" >
+                        Contacts
+                        <svg class="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.51a.75.75 0 01-1.08 0l-4.25-4.51a.75.75 0 111.08-1.04z" clip-rule="evenodd" /> </svg>
+                    </button>
+                    <div class="absolute left-0 z-50 hidden w-48 pt-2 group-hover:block">
+                        <div class="rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                            <a href="{% url 'contacts:customer_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" > Customers </a>
+                            <a href="{% url 'contacts:supplier_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" > Suppliers </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="{% url 'banking:bank_account_list' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white" > Banking </a>
+                <!-- Invoices -->
+                <a href="{% url 'accounts:invoice_list' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white" > Invoices </a>
+                <!-- Purchases -->
+                <a href="{% url 'accounts:purchase_list' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white" > Purchases </a>
+                <!-- Expenses -->
+                <a href="{% url 'accounts:expense_list' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white"> Expenses </a>
+                <!-- Reports -->
+                <div class="relative group">
+                    <button type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white" > Reports <svg class="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 3.938a.75.75 0 01-1.08 0l-4.25-4.51a.75.75 0 01.02-1.06z" clip-rule="evenodd" /> </svg> </button>
+                    <div class="absolute left-0 z-50 hidden w-56 pt-2 group-hover:block">
+                        <div class="rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                            <a href="{% url 'accounts:trial_balance' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" > Trial Balance </a>
+                            <a href="{% url 'accounts:profit_and_loss' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" > Profit &amp; Loss </a> 
+                            <a href="{% url 'accounts:balance_sheet' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" > Balance Sheet </a> 
+                            <a href="{% url 'accounts:tax' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" > Tax </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- settings -->
+            <a href="{% url 'business:settings' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white" > Settings </a>
+            <a href="{{ logout_url }}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white" > Logout </a>
+            
+            {% else %}
+                <a href="{{ login_url }}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-[#224B75] dark:text-gray-200 dark:hover:bg-slate-700 dark:hover:text-white" > Login </a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+

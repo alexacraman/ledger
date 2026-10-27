@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+
+    <!-- Header -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8">
+
+        <div>
+
+            <div class="flex items-center gap-3">
+
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    {{ expense.description }}
+                </h1>
+
+                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold
+                    {% if expense.status == 'DRAFT' %}
+                        bg-gray-100 text-gray-700
+                    {% elif expense.status == 'POSTED' %}
+                        bg-blue-100 text-blue-700
+                    {% elif expense.status == 'VOID' %}
+                        bg-red-100 text-red-700
+                    {% endif %}
+                ">
+                    {{ expense.get_status_display }}
+                </span>
+
+            </div>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Business expense
+            </p>
+
+        </div>
+
+
+        {% if expense.status == "DRAFT" %}
+
+            <form method="post"
+                  action="{% url 'accounts:expense_post' expense.pk %}">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="rounded-lg bg-[#224B75] px-4 py-2.5
+                           text-sm font-semibold text-white hover:bg-[#1b3d60]"
+                >
+                    Post expense
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Details -->
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm
+                    dark:border-slate-700 dark:bg-slate-800">
+
+            <h2 class="mb-6 text-lg font-semibold text-gray-900 dark:text-white">
+                Expense details
+            </h2>
+
+            <dl class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Expense date
+                    </dt>
+
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                        {{ expense.expense_date|date:"d/m/Y" }}
+                    </dd>
+                </div>
+
+
+                <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Reference
+                    </dt>
+
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                        {{ expense.reference|default:"—" }}
+                    </dd>
+                </div>
+
+
+                <div class="sm:col-span-2">
+
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Description
+                    </dt>
+
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                        {{ expense.description }}
+                    </dd>
+
+                </div>
+
+
+                <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Expense account
+                    </dt>
+
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                        {{ expense.expense_account }}
+                    </dd>
+                </div>
+
+
+                <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Payment account
+                    </dt>
+
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                        {{ expense.payment_account }}
+                    </dd>
+                </div>
+
+
+                <div class="sm:col-span-2">
+
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Supplier
+                    </dt>
+
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                        {{ expense.supplier_name|default:"—" }}
+                    </dd>
+
+                </div>
+
+            </dl>
+
+        </div>
+
+
+        <!-- Totals -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm
+                    dark:border-slate-700 dark:bg-slate-800">
+
+            <h2 class="mb-6 text-lg font-semibold text-gray-900 dark:text-white">
+                Totals
+            </h2>
+
+            <div class="space-y-4">
+
+                <div class="flex justify-between">
+
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                        Net
+                    </span>
+
+                    <span class="font-medium text-gray-900 dark:text-white">
+                        £{{ expense.total_net|floatformat:2 }}
+                    </span>
+
+                </div>
+
+
+                <div class="flex justify-between">
+
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                        VAT
+                    </span>
+
+                    <span class="font-medium text-gray-900 dark:text-white">
+                        £{{ expense.total_vat|floatformat:2 }}
+                    </span>
+
+                </div>
+
+
+                <div class="flex justify-between border-t border-gray-200 pt-4
+                            dark:border-slate-600">
+
+                    <span class="text-lg font-bold text-gray-900 dark:text-white">
+                        Total
+                    </span>
+
+                    <span class="text-lg font-bold text-gray-900 dark:text-white">
+                        £{{ expense.total_gross|floatformat:2 }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Lines -->
+
+    <div class="mt-6 rounded-xl border border-gray-200 bg-white shadow-sm
+                dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4
+                    dark:border-slate-700">
+
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Expense lines
+            </h2>
+
+            {% if expense.status == "DRAFT" %}
+
+                <a
+                    href="{% url 'accounts:expense_line_create' expense.pk %}"
+                    class="rounded-lg bg-[#224B75] px-4 py-2
+                           text-sm font-semibold text-white hover:bg-[#1b3d60]"
+                >
+                    Add line item
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="p-6">
+
+            {% with lines=expense.lines.all %}
+
+                {% if lines %}
+
+                    <div class="overflow-x-auto rounded-xl border border-gray-200
+                                dark:border-slate-700">
+
+                        <table class="min-w-full text-sm">
+
+                            <thead class="bg-gray-50 dark:bg-slate-700">
+
+                                <tr>
+
+                                    <th class="px-4 py-3 text-left">
+                                        Description
+                                    </th>
+
+                                    <th class="px-4 py-3 text-right">
+                                        Qty
+                                    </th>
+
+                                    <th class="px-4 py-3 text-right">
+                                        Unit price
+                                    </th>
+
+                                    <th class="px-4 py-3 text-right">
+                                        VAT
+                                    </th>
+
+                                    <th class="px-4 py-3 text-right">
+                                        Net
+                                    </th>
+
+                                    <th class="px-4 py-3 text-right">
+                                        Total
+                                    </th>
+
+                                    {% if expense.status == "DRAFT" %}
+                                        <th></th>
+                                    {% endif %}
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+
+                                {% for line in lines %}
+
+                                    <tr>
+
+                                        <td class="px-4 py-3">
+                                            {{ line.description }}
+                                        </td>
+
+                                        <td class="px-4 py-3 text-right">
+                                            {{ line.quantity }}
+                                        </td>
+
+                                        <td class="px-4 py-3 text-right">
+                                            £{{ line.unit_price|floatformat:2 }}
+                                        </td>
+
+                                        <td class="px-4 py-3 text-right">
+                                            {{ line.vat_rate|floatformat:2 }}%
+                                        </td>
+
+                                        <td class="px-4 py-3 text-right">
+                                            £{{ line.net_amount|floatformat:2 }}
+                                        </td>
+
+                                        <td class="px-4 py-3 text-right font-medium">
+                                            £{{ line.gross_amount|floatformat:2 }}
+                                        </td>
+
+                                        {% if expense.status == "DRAFT" %}
+
+                                            <td class="px-4 py-3 text-right whitespace-nowrap">
+
+                                                <a
+                                                    href="{% url 'accounts:expense_line_update' expense.pk line.pk %}"
+                                                    class="text-[#224B75] hover:underline"
+                                                >
+                                                    Edit
+                                                </a>
+
+                                                <a
+                                                    href="{% url 'accounts:expense_line_delete' expense.pk line.pk %}"
+                                                    class="ml-3 text-red-600 hover:underline"
+                                                >
+                                                    Delete
+                                                </a>
+
+                                            </td>
+
+                                        {% endif %}
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="rounded-xl border border-dashed border-gray-300 p-8
+                                text-center dark:border-slate-600">
+
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            No expense lines have been added yet.
+                        </p>
+
+                        {% if expense.status == "DRAFT" %}
+
+                            <a
+                                href="{% url 'accounts:expense_line_create' expense.pk %}"
+                                class="mt-4 inline-block text-sm font-medium
+                                       text-[#224B75] hover:underline"
+                            >
+                                Add the first line item
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endwith %}
+
+        </div>
+
+    </div>
+
+
+    {% if expense.status == "POSTED" and expense.journal_entry %}
+
+        <!-- Journal entry -->
+
+        <div class="mt-6 rounded-xl border border-gray-200 bg-white shadow-sm
+                    dark:border-slate-700 dark:bg-slate-800">
+
+            <div class="border-b border-gray-200 px-6 py-4 dark:border-slate-700">
+
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Journal entry
+                </h2>
+
+            </div>
+
+
+            <div class="p-6">
+
+                <dl class="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-6">
+
+                    <div>
+
+                        <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                            Date
+                        </dt>
+
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {{ expense.journal_entry.transaction_date|date:"d/m/Y" }}
+                        </dd>
+
+                    </div>
+
+
+                    <div>
+
+                        <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                            Reference
+                        </dt>
+
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {{ expense.journal_entry.reference|default:"—" }}
+                        </dd>
+
+                    </div>
+
+
+                    <div>
+
+                        <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                            Description
+                        </dt>
+
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {{ expense.journal_entry.description }}
+                        </dd>
+
+                    </div>
+
+                </dl>
+
+
+                <div class="overflow-x-auto rounded-xl border border-gray-200
+                            dark:border-slate-700">
+
+                    <table class="min-w-full text-sm">
+
+                        <thead class="bg-gray-50 dark:bg-slate-700">
+
+                            <tr>
+
+                                <th class="px-4 py-3 text-left">
+                                    Account
+                                </th>
+
+                                <th class="px-4 py-3 text-right">
+                                    Debit
+                                </th>
+
+                                <th class="px-4 py-3 text-right">
+                                    Credit
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+
+                            {% for item in expense.journal_entry.items.all %}
+
+                                <tr>
+
+                                    <td class="px-4 py-3">
+                                        {{ item.account }}
+                                    </td>
+
+                                    <td class="px-4 py-3 text-right">
+                                        £{{ item.debit|floatformat:2 }}
+                                    </td>
+
+                                    <td class="px-4 py-3 text-right">
+                                        £{{ item.credit|floatformat:2 }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

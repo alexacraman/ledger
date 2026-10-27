@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Expenses
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Record and manage paid business expenses.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'accounts:expense_create' %}"
+            class="rounded-lg bg-[#224B75] px-4 py-2.5
+                   text-sm font-semibold text-white hover:bg-[#1b3d60]"
+        >
+            New Expense
+        </a>
+
+    </div>
+
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm
+                dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full text-sm">
+
+                <thead class="bg-gray-50 dark:bg-slate-700">
+
+                    <tr>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold
+                                   uppercase tracking-wide text-gray-500">
+                            Date
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold
+                                   uppercase tracking-wide text-gray-500">
+                            Description
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold
+                                   uppercase tracking-wide text-gray-500">
+                            Expense account
+                        </th>
+
+                        <th class="px-6 py-3 text-right text-xs font-semibold
+                                   uppercase tracking-wide text-gray-500">
+                            Total
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold
+                                   uppercase tracking-wide text-gray-500">
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+
+                    {% for expense in expenses %}
+
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50">
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ expense.expense_date|date:"d/m/Y" }}
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <a
+                                    href="{% url 'accounts:expense_detail' expense.pk %}"
+                                    class="font-semibold text-[#224B75] hover:underline"
+                                >
+                                    {{ expense.description }}
+                                </a>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                {{ expense.expense_account }}
+                            </td>
+
+                            <td class="px-6 py-4 text-right font-medium">
+                                £{{ expense.total_gross|floatformat:2 }}
+                            </td>
+
+                            <td class="px-6 py-4">
+
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold
+                                    {% if expense.status == 'DRAFT' %}
+                                        bg-gray-100 text-gray-700
+                                    {% elif expense.status == 'POSTED' %}
+                                        bg-blue-100 text-blue-700
+                                    {% elif expense.status == 'VOID' %}
+                                        bg-red-100 text-red-700
+                                    {% endif %}
+                                ">
+                                    {{ expense.get_status_display }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="5"
+                                class="px-6 py-12 text-center text-sm text-gray-500">
+                                No expenses have been created yet.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

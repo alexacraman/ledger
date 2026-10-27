@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+    <div class="mb-6">
+
+        <a
+            href="{% url 'accounts:transaction_list' %}"
+            class="text-sm font-medium text-[#224B75] hover:underline dark:text-blue-400"
+        >
+            ← Back to transactions
+        </a>
+
+    </div>
+
+
+    <div class="mb-8">
+
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-white">
+            {{ entry.description }} {{ entry.id }}
+        </h1>
+
+        <div class="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+
+            <span>
+                {{ entry.transaction_date|date:"d F Y" }}
+            </span>
+
+            {% if entry.reference %}
+                <span>
+                    Reference: {{ entry.reference }}
+                </span>
+            {% endif %}
+
+            <span>
+                Period: {{ entry.period.name }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm
+                dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+
+                <thead class="bg-slate-50 dark:bg-slate-700/50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide
+                                   text-slate-500 dark:text-slate-400">
+                            Account
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide
+                                   text-slate-500 dark:text-slate-400">
+                            Debit
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide
+                                   text-slate-500 dark:text-slate-400">
+                            Credit
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+
+                    {% for item in entry.items.all %}
+
+                        <tr>
+
+                            <td class="px-5 py-4 text-sm text-slate-700 dark:text-slate-300">
+
+                                <span class="font-medium">
+                                    {{ item.account.code }}
+                                </span>
+
+                                <span class="ml-2">
+                                    {{ item.account.name }}
+                                </span>
+
+                            </td>
+
+
+                            <td class="px-5 py-4 text-right text-sm text-slate-700 dark:text-slate-300">
+
+                                {% if item.debit %}
+                                    £{{ item.debit|floatformat:2 }}
+                                {% else %}
+                                    —
+                                {% endif %}
+
+                            </td>
+
+
+                            <td class="px-5 py-4 text-right text-sm text-slate-700 dark:text-slate-300">
+
+                                {% if item.credit %}
+                                    £{{ item.credit|floatformat:2 }}
+                                {% else %}
+                                    —
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+
+                <tfoot class="border-t-2 border-slate-300 bg-slate-50 dark:border-slate-600 dark:bg-slate-700/50">
+
+                    <tr>
+
+                        <td class="px-5 py-4 text-right text-sm font-bold text-slate-800 dark:text-white">
+                            Total
+                        </td>
+
+                        <td class="px-5 py-4 text-right text-sm font-bold text-slate-800 dark:text-white">
+                            £{{ entry.total_debits|floatformat:2 }}
+                        </td>
+
+                        <td class="px-5 py-4 text-right text-sm font-bold text-slate-800 dark:text-white">
+                            £{{ entry.total_credits|floatformat:2 }}
+                        </td>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    {% if entry.is_posted %}
+
+        <div class="mt-4 text-sm text-slate-500 dark:text-slate-400">
+            This transaction has been posted and cannot be edited.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

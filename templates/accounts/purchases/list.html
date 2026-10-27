@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Purchases
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Record and manage business purchases.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'accounts:purchase_create' %}"
+            class="rounded-lg bg-[#224B75] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1b3d60]"
+        >
+            New purchase
+        </a>
+
+    </div>
+
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-sm">
+
+                <thead class="bg-gray-50 dark:bg-slate-700">
+                    <tr>
+                        <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">
+                            Supplier
+                        </th>
+
+                        <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">
+                            Date
+                        </th>
+
+                        <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">
+                           Purchase No
+                        </th>
+
+                        <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-200">
+                            Total
+                        </th>
+
+                        <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+
+                    {% for purchase in purchases %}
+
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/50">
+
+                            <td class="px-6 py-4">
+                                <a
+                                    href="{% url 'accounts:purchase_detail' purchase.pk %}"
+                                    class="font-medium text-[#224B75] hover:underline dark:text-blue-400"
+                                >
+                                    {{ purchase.supplier_name }}
+                                </a>
+                            </td>
+
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+                                {{ purchase.purchase_date|date:"d/m/Y" }}
+                            </td>
+
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300">
+                                {{ purchase.purchase_number|default:"—" }}
+                            </td>
+
+                            <td class="px-6 py-4 text-right font-medium text-gray-900 dark:text-white">
+                                £{{ purchase.total_gross|floatformat:2 }}
+                            </td>
+
+                            <td class="px-6 py-4">
+
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold
+                                    {% if purchase.status == 'DRAFT' %}
+                                        bg-gray-100 text-gray-700
+                                    {% elif purchase.status == 'PAID' %}
+                                        bg-green-100 text-green-700
+                                    {% elif purchase.status == 'PARTIAL' %}
+                                        bg-yellow-100 text-yellow-700
+                                    {% elif purchase.status == 'VOID' %}
+                                        bg-red-100 text-red-700
+                                    {% else %}
+                                        bg-blue-100 text-blue-700
+                                    {% endif %}
+                                ">
+                                    {{ purchase.get_status_display }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="px-6 py-12 text-center text-gray-500 dark:text-gray-400"
+                            >
+                                No purchases have been recorded yet.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

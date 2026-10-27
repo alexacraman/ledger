@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="mb-8">
+
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+
+            {% if line %}
+                Edit expense line
+            {% else %}
+                Add expense line
+            {% endif %}
+
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {{ expense.description }}
+        </p>
+
+    </div>
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm
+                    dark:border-slate-700 dark:bg-slate-800">
+
+            {% if form.non_field_errors %}
+
+                <div class="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+                    {{ form.non_field_errors }}
+                </div>
+
+            {% endif %}
+
+
+            <div class="space-y-6">
+
+                {% for field in form %}
+
+                    <div>
+
+                        <label
+                            for="{{ field.id_for_label }}"
+                            class="mb-2 block text-sm font-medium
+                                   text-gray-700 dark:text-gray-200"
+                        >
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.errors %}
+                            <div class="mt-1 text-sm text-red-600">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+                <a
+                    href="{% url 'accounts:expense_detail' expense.pk %}"
+                    class="rounded-lg border border-gray-300 bg-white px-4 py-2.5
+                           text-center text-sm font-semibold text-gray-700
+                           hover:bg-gray-50"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="rounded-lg bg-[#224B75] px-5 py-2.5
+                           text-sm font-semibold text-white hover:bg-[#1b3d60]"
+                >
+                    {% if line %}
+                        Save changes
+                    {% else %}
+                        Add line
+                    {% endif %}
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}title | task{% endblock %}
+{% block content %}
+{% load static  %}
+<div class="max-w-sm sm:max-w-6xl mx-auto text-xl bg-blue-grey text-white">
+    <div class=" rounded shadow-lg my-20 border" style="box-shadow: 0px 30px 10px -15px #909090 , 0px 70px 10px -35px #D3D3D3, 0px 110px 10px -55px #F5F5F5; ">
+      <div class="flex justify-center ">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="grey" class="w-24 h-24 mt-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+        </svg>
+      </div>
+
+        <div class="p-6">
+            <h5 class="text-2xl text-center my-6">{{ task.title|capfirst }}</h5>
+            <p class=" mb-4">
+                {{ task.description|linebreaks }}
+            </p>
+        </div>
+          <div class="py-3 px-6 flex justify-center  ">
+              <small>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg> created: {{task.created|timesince}} ago!
+            </small>
+        </div>
+        <div class="py-3 px-6 border-t border-gray-300 flex justify-center  ">
+            <a  class="outline outline-slate-400  px-6 py-2 rounded-xl hover:rounded-none hover:shadow-white hover:shadow-2xl mr-2" href="{% url 'tasks:tasks' %}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+              </svg></a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+

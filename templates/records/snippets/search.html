@@ -1,0 +1,52 @@
+<!-- Filter -->
+<div class="mt-12 mb-6 pt-5 border-t border-slate-200">
+
+   
+<form method="get" action="{% url 'record:record_list' %}"
+      class="mb-6 flex flex-wrap items-end gap-4">
+
+    <div>
+        <label for="year" class="mb-1 block text-sm font-medium text-gray-700">
+            Year
+        </label>
+        <select name="year" id="year"
+                class="rounded-md border border-gray-300 text-gray-700 px-3 py-2 text-sm">
+            <option value="">All years</option>
+            {% for year in available_years %}
+                <option value="{{ year }}"
+                    {% if selected_year == year %}selected{% endif %}>
+                    {{ year }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="month" class="mb-1 block text-sm font-medium text-gray-700">
+            Month
+        </label>
+        <select name="month" id="month" class="rounded-md border border-gray-300 text-gray-700 px-3 py-2 text-sm">
+            <option value="">All months</option>
+            {% for month in available_months %}
+                <option value="{{ month.value }}"
+                    {% if selected_month == month.value %}selected{% endif %}>
+                    {{ month.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit"
+            class="rounded-md bg-[#224B75] px-4 py-2 text-sm font-medium text-white hover:bg-[#1b3d60]">
+        Filter
+    </button>
+
+    <a href="{% url 'record:record_list' %}"
+       class="px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+        Clear filters
+    </a>
+
+</form>
+
+
+</div>
