@@ -6,15 +6,35 @@ from django.db import models
 
 class Account(models.Model):
     ACCOUNT_TYPES = [('ASSET', 'Asset'), ('LIABILITY', 'Liability'), ('EQUITY', 'Equity'), ('REVENUE', 'Revenue'), ('EXPENSE', 'Expense')]
-    code = models.CharField(max_length=20, unique=True)
-    name = models.CharField(max_length=100, unique=True)
+    business = models.ForeignKey(
+        'business.Business',
+        on_delete=models.CASCADE,
+        related_name='accounts',
+        null=True,
+        blank=True,
+    )
+    code = models.CharField(max_length=20)
+    name = models.CharField(max_length=100)
     type = models.CharField(max_length=20, choices=ACCOUNT_TYPES)
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['business', 'code'], name='unique_account_code_per_business'),
+            models.UniqueConstraint(fields=['business', 'name'], name='unique_account_name_per_business'),
+        ]
 
     def __str__(self):
         return f'{self.code} - {self.name}'
 
 class AccountingPeriod(models.Model):
+    business = models.ForeignKey(
+        'business.Business',
+        on_delete=models.CASCADE,
+        related_name='accounting_periods',
+        null=True,
+        blank=True,
+    )
     name        = models.CharField(max_length=20)
     start_date  = models.DateField()
     end_date    = models.DateField()
@@ -36,6 +56,13 @@ class AccountingPeriod(models.Model):
                 raise ValidationError('This accounting period overlaps an existing period.')
 
 class JournalEntry(models.Model):
+    business = models.ForeignKey(
+        'business.Business',
+        on_delete=models.CASCADE,
+        related_name='journal_entries',
+        null=True,
+        blank=True,
+    )
     reference           = models.CharField(max_length=50, blank=True)
     description         = models.CharField(max_length=255)
     transaction_date    = models.DateField()

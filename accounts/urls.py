@@ -6,7 +6,7 @@ from .views import (
     trial_balance_view, profit_and_loss_view, balance_sheet_view, tax_view
 
 ) 
-from . import views_invoice, views_purchases, views_expenses, views_periods
+from . import views_invoice, views_purchases, views_expenses, views_periods, views_accruals
 
 app_name = 'accounts'
 
@@ -55,6 +55,8 @@ urlpatterns = [
     path("periods/", views_periods.period_list, name="period_list"), 
     path("periods/<int:pk>/", views_periods.period_detail, name="period_detail"), 
     path("periods/<int:pk>/close/", views_periods.period_close, name="period_close"),
+
+    path("year-end-adjustments/", views_accruals.year_end_adjustment_create, name="year_end_adjustment_create"),
 
     path("invoices/<int:pk>/pdf/", views_invoice.invoice_pdf, name="invoice_pdf"), 
     path("invoices/<int:pk>/email/", views_invoice.invoice_email, name="invoice_email"),

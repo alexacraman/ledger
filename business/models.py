@@ -1,9 +1,37 @@
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 
 
+class Business(models.Model):
+    owner       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='businesses', )
+    name        = models.CharField(max_length=200)
+    is_active   = models.BooleanField(default=True)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['owner', 'name'],
+                name='unique_business_name_per_owner',
+            )
+        ]
+
+    def __str__(self):
+        return self.name
+
+
 class AccountingBasisPeriod(models.Model):
+    business = models.ForeignKey(
+        Business,
+        on_delete=models.CASCADE,
+        related_name='accounting_basis_periods',
+        null=True,
+        blank=True,
+    )
     effective_from = models.DateField()
     effective_to = models.DateField(null=True, blank=True)
     accounting_basis = models.CharField(max_length=20, choices=[
@@ -41,6 +69,13 @@ class AccountingBasisPeriod(models.Model):
 
 
 class VATRegistrationPeriod(models.Model):
+    business = models.ForeignKey(
+        Business,
+        on_delete=models.CASCADE,
+        related_name='vat_registration_periods',
+        null=True,
+        blank=True,
+    )
     effective_from = models.DateField()
     effective_to = models.DateField(null=True, blank=True)
     vat_registered = models.BooleanField(default=False)
@@ -97,11 +132,18 @@ class BusinessSettings(models.Model):
         ('FLAT_RATE', 'Flat Rate VAT'),
     ]
 
-    business_name    = models.CharField(max_length=200, blank=True) 
-    accounting_basis = models.CharField(max_length=20, choices=ACCOUNTING_BASIS_CHOICES, default='CASH') 
-    vat_registered   = models.BooleanField(default=False) 
-    vat_scheme       = models.CharField(max_length=20, choices=VAT_SCHEME_CHOICES, blank=True) 
-    created_at       = models.DateTimeField(auto_now_add=True) 
+    business = models.OneToOneField(
+        Business,
+        on_delete=models.CASCADE,
+        related_name='settings',
+        null=True,
+        blank=True,
+    )
+    business_name    = models.CharField(max_length=200, blank=True)
+    accounting_basis = models.CharField(max_length=20, choices=ACCOUNTING_BASIS_CHOICES, default='CASH')
+    vat_registered   = models.BooleanField(default=False)
+    vat_scheme       = models.CharField(max_length=20, choices=VAT_SCHEME_CHOICES, blank=True)
+    created_at       = models.DateTimeField(auto_now_add=True)
     updated_at       = models.DateTimeField(auto_now=True)
 
     class Meta:

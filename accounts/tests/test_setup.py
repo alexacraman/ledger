@@ -28,9 +28,27 @@ class AccountingTestBase(TestCase):
             type="ASSET",
         )
 
+        cls.allowance_for_doubtful_debts = Account.objects.create(
+            code="1210",
+            name="Allowance for Doubtful Debts",
+            type="ASSET",
+        )
+
+        cls.accrued_income = Account.objects.create(
+            code="1230",
+            name="Accrued Income",
+            type="ASSET",
+        )
+
         cls.vat_reclaimable = Account.objects.create(
             code="1300",
             name="VAT Reclaimable",
+            type="ASSET",
+        )
+
+        cls.prepayments = Account.objects.create(
+            code="1350",
+            name="Prepayments",
             type="ASSET",
         )
 
@@ -43,6 +61,12 @@ class AccountingTestBase(TestCase):
         cls.vat_liability = Account.objects.create(
             code="2100",
             name="VAT Liability",
+            type="LIABILITY",
+        )
+
+        cls.accrued_expenses = Account.objects.create(
+            code="2200",
+            name="Accrued Expenses",
             type="LIABILITY",
         )
 
@@ -73,6 +97,12 @@ class AccountingTestBase(TestCase):
         cls.general_expenses = Account.objects.create(
             code="5300",
             name="General Expenses",
+            type="EXPENSE",
+        )
+
+        cls.irrecoverable_debts = Account.objects.create(
+            code="5400",
+            name="Irrecoverable Debts",
             type="EXPENSE",
         )
 

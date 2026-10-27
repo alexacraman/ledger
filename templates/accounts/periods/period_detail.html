@@ -25,7 +25,14 @@
             </p>
         </div>
 
-        <div>
+        <div class="flex flex-col gap-3 items-end">
+
+            <a
+                href="{% url 'accounts:year_end_adjustment_create' %}"
+                class="rounded-lg border border-[#224B75] px-5 py-2.5 text-sm font-medium text-[#224B75] hover:bg-[#224B75] hover:text-white"
+            >
+                Add year-end adjustment
+            </a>
 
             {% if period.is_closed %}
 

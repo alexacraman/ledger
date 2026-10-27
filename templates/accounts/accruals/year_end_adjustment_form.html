@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-slate-900 mb-6">Year-end adjustments</h1>
+
+    <form method="post" class="bg-white border border-slate-200 rounded-lg shadow-sm p-6 space-y-6">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                {{ form.adjustment_type.label_tag }}
+                {{ form.adjustment_type }}
+                {% if form.adjustment_type.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.adjustment_type.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.transaction_date.label_tag }}
+                {{ form.transaction_date }}
+                {% if form.transaction_date.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.transaction_date.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.amount.label_tag }}
+                {{ form.amount }}
+                {% if form.amount.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.amount.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.reference.label_tag }}
+                {{ form.reference }}
+                {% if form.reference.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ form.reference.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {% if form.description.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ form.description.errors|join:', ' }}</p>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for field in form %}
+                {% if field.name not in 'adjustment_type,transaction_date,amount,description,reference' %}
+                    <div>
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ field.errors|join:', ' }}</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="pt-2">
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                Post adjustment
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

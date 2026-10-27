@@ -1,15 +1,36 @@
 from datetime import date
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.db.models import Q
 
 from accounts.models import Expense, Invoice, JournalEntry, Purchase
-from business.models import AccountingBasisPeriod, BusinessSettings, VATRegistrationPeriod
+from business.models import AccountingBasisPeriod, Business, BusinessSettings, VATRegistrationPeriod
 
 
-def get_business_settings():
-    settings = BusinessSettings.objects.order_by("pk").first()
+def get_active_business_for_user(request):
+    """Return the selected or default business for the logged-in user."""
+    if request.user.is_anonymous:
+        raise PermissionDenied("Authentication is required.")
+
+    business_id = request.session.get("active_business_id")
+    queryset = Business.objects.filter(owner=request.user, is_active=True)
+
+    if business_id:
+        business = queryset.filter(pk=business_id).first()
+        if business is not None:
+            return business
+
+    business = queryset.order_by("id").first()
+    if business is None:
+        raise PermissionDenied("No active business is configured for this user.")
+
+    request.session["active_business_id"] = business.pk
+    return business
+
+
+def get_business_settings(business=None):
+    settings = BusinessSettings.objects.filter(business=business).first() if business else BusinessSettings.objects.order_by("pk").first()
 
     if settings is None:
         settings = BusinessSettings.objects.create(

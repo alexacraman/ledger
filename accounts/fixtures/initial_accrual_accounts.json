@@ -1,0 +1,42 @@
+[
+  {
+    "model": "accounts.account",
+    "pk": 24,
+    "fields": {
+      "code": "1210",
+      "name": "Allowance for Doubtful Debts",
+      "type": "ASSET",
+      "is_active": true
+    }
+  },
+  {
+    "model": "accounts.account",
+    "pk": 25,
+    "fields": {
+      "code": "1230",
+      "name": "Accrued Income",
+      "type": "ASSET",
+      "is_active": true
+    }
+  },
+  {
+    "model": "accounts.account",
+    "pk": 26,
+    "fields": {
+      "code": "1350",
+      "name": "Prepayments",
+      "type": "ASSET",
+      "is_active": true
+    }
+  },
+  {
+    "model": "accounts.account",
+    "pk": 27,
+    "fields": {
+      "code": "2200",
+      "name": "Accrued Expenses",
+      "type": "LIABILITY",
+      "is_active": true
+    }
+  }
+]

@@ -1,18 +1,49 @@
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from accounts.models import Account
 from accounts.services.income import record_income
 
-from .models import AccountingBasisPeriod, BusinessSettings, VATRegistrationPeriod
+from .models import AccountingBasisPeriod, Business, BusinessSettings, VATRegistrationPeriod
 from .services.settings import (
     financial_activity_exists,
     get_accounting_basis_for_date,
     get_vat_registration_for_date,
     update_business_settings,
 )
+
+
+class BusinessIsolationTests(TestCase):
+
+    def test_each_user_can_have_multiple_businesses_with_isolated_accounts(self):
+        user = get_user_model().objects.create_user(
+            username="soletrader1",
+            email="soletrader1@example.com",
+            password="secret123",
+        )
+
+        first_business = Business.objects.create(owner=user, name="First business")
+        second_business = Business.objects.create(owner=user, name="Second business")
+
+        first_account = Account.objects.create(
+            business=first_business,
+            code="1000",
+            name="Bank - First",
+            type="ASSET",
+        )
+        second_account = Account.objects.create(
+            business=second_business,
+            code="1000",
+            name="Bank - Second",
+            type="ASSET",
+        )
+
+        self.assertEqual(Account.objects.filter(business=first_business).count(), 1)
+        self.assertEqual(Account.objects.filter(business=second_business).count(), 1)
+        self.assertNotEqual(first_account.pk, second_account.pk)
 
 
 class BusinessSettingsTests(TestCase):
