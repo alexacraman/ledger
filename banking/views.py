@@ -16,6 +16,7 @@ from .services.reconciliation import (
     get_reconciliation_candidates,
     create_transaction_from_bank_transaction,
     get_suggested_accounting_treatment,
+    bulk_create_transactions_from_suggested_treatment,
 )
 
 
@@ -68,6 +69,63 @@ def bank_account_detail(request, pk):
         BankAccount.objects.select_related("account"),
         pk=pk,
     )
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "bulk_reconcile":
+            selected_ids = request.POST.getlist("selected_transactions")
+
+            if not selected_ids:
+                messages.error(
+                    request,
+                    "Please select at least one unreconciled transaction.",
+                )
+            else:
+                source_transaction_id = request.POST.get("source_transaction") or selected_ids[0]
+
+                source_transaction = get_object_or_404(
+                    BankTransaction.objects.select_related(
+                        "bank_account__account",
+                        "journal_entry",
+                    ),
+                    pk=source_transaction_id,
+                    bank_account=bank_account,
+                )
+
+                selected_transactions = (
+                    BankTransaction.objects
+                    .select_related(
+                        "bank_account__account",
+                        "journal_entry",
+                    )
+                    .filter(
+                        bank_account=bank_account,
+                        pk__in=selected_ids,
+                    )
+                    .order_by("-transaction_date", "-id")
+                )
+
+                try:
+                    bulk_create_transactions_from_suggested_treatment(
+                        bank_transactions=selected_transactions,
+                        source_bank_transaction=source_transaction,
+                    )
+                except ValidationError as exc:
+                    messages.error(request, str(exc))
+                else:
+                    messages.success(
+                        request,
+                        (
+                            f"{selected_transactions.count()} transaction"
+                            f"{'s' if selected_transactions.count() != 1 else ''} "
+                            "reconciled using the same treatment."
+                        ),
+                    )
+                    return redirect(
+                        "banking:bank_account_detail",
+                        pk=bank_account.pk,
+                    )
 
     transactions = (
         bank_account.transactions

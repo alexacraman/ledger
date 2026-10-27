@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from accounts.models import Account, Purchase, PurchasePayment
-from business.models import BusinessSettings
+from business.services.settings import get_business_settings
 
 from .journal import create_journal_entry
 
@@ -21,7 +21,7 @@ def post_purchase( purchase, purchases_acc=None, vat_reclaimable_acc=None, accou
         Creates the normal Dr Purchases (+ VAT), Cr A/P entry.
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis == "CASH":
         return finalise_cash_purchase(purchase)
@@ -34,7 +34,7 @@ def finalise_cash_purchase(purchase):
     Finalise a purchase under cash basis without creating a journal entry.
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "CASH":
         raise ValidationError( "This function can only be used for cash-basis accounting." )
@@ -74,7 +74,7 @@ def post_purchase_to_ledger( purchase, purchases_acc, vat_reclaimable_acc, accou
     This function deliberately does not support cash basis.
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "ACCRUAL":
         raise ValidationError( "post_purchase_to_ledger() is only available under accrual accounting." )
@@ -144,7 +144,7 @@ def record_purchase_payment( purchase, amount, bank_account, accounts_payable_ac
     if amount <= 0:
         raise ValidationError( "Payment amount must be greater than zero." )
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.vat_registered and settings.accounting_basis == "CASH":
         raise NotImplementedError( "Cash-basis VAT accounting has not yet been implemented." )
@@ -225,7 +225,7 @@ def void_purchase(*, purchase):
     voided directly because the payment has already affected the
     ledger.
     """
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "CASH":
         raise NotImplementedError( "Purchase voiding for accrual-basis purchases has not yet been implemented." )

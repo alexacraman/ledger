@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from accounts.models import Account, Invoice, Payment
-from business.models import BusinessSettings
+from business.services.settings import get_business_settings
 
 from .journal import create_journal_entry
 
@@ -26,7 +26,7 @@ def post_invoice(
         Creates the normal Dr A/R, Cr Sales (+ VAT) entry.
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis == "CASH":
         return finalise_cash_invoice(invoice)
@@ -44,7 +44,7 @@ def finalise_cash_invoice(invoice):
     Finalise an invoice under cash basis without creating a journal entry.
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "CASH":
         raise ValidationError(
@@ -103,7 +103,7 @@ def post_invoice_to_ledger(
     This function deliberately does not support cash basis.
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "ACCRUAL":
         raise ValidationError(
@@ -193,7 +193,7 @@ def record_invoice_payment(
             "Payment amount must be greater than zero."
         )
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.vat_registered and settings.accounting_basis == "CASH":
         raise NotImplementedError(
@@ -313,7 +313,7 @@ def void_invoice(*, invoice):
     voided directly because the payment has already affected the
     ledger.
     """
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "CASH":
         raise NotImplementedError(

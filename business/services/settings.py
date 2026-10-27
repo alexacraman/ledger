@@ -6,7 +6,17 @@ from business.models import BusinessSettings
 
 
 def get_business_settings():
-    return BusinessSettings.objects.get(pk=1)
+    settings = BusinessSettings.objects.order_by("pk").first()
+
+    if settings is None:
+        settings = BusinessSettings.objects.create(
+            business_name="",
+            accounting_basis="CASH",
+            vat_registered=False,
+            vat_scheme="",
+        )
+
+    return settings
 
 
 def financial_activity_exists():
@@ -67,8 +77,17 @@ def update_business_settings(
         settings = (
             BusinessSettings.objects
             .select_for_update()
-            .get(pk=1)
+            .order_by("pk")
+            .first()
         )
+
+        if settings is None:
+            settings = BusinessSettings.objects.create(
+                business_name="",
+                accounting_basis="CASH",
+                vat_registered=False,
+                vat_scheme="",
+            )
 
         activity_exists = financial_activity_exists()
 

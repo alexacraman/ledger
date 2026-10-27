@@ -186,10 +186,31 @@
     </div>
 
     {% if transactions %}
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="bulk_reconcile">
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center gap-2 text-sm text-gray-600">
+                    <input id="select-all-transactions" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-[#224B75] focus:ring-[#224B75]">
+                    <label for="select-all-transactions" class="font-medium">Select all</label>
+                </div>
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center rounded-lg bg-[#224B75] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1b3d60] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    Reconcile selected
+                </button>
+            </div>
+
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            <span class="sr-only">Select</span>
+                        </th>
                         <th
                             scope="col"
                             class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
@@ -237,6 +258,28 @@
                 <tbody class="divide-y divide-gray-200 bg-white">
                     {% for transaction in transactions %}
                         <tr class="hover:bg-gray-50">
+                            <td class="whitespace-nowrap px-3 py-4 align-top">
+                                {% if not transaction.reconciled %}
+                                    <div class="flex flex-col items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            name="selected_transactions"
+                                            value="{{ transaction.pk }}"
+                                            class="bulk-select h-4 w-4 rounded border-gray-300 text-[#224B75] focus:ring-[#224B75]"
+                                        >
+                                        {% if transaction.suggested_treatment %}
+                                            <input
+                                                type="radio"
+                                                name="source_transaction"
+                                                value="{{ transaction.pk }}"
+                                                class="h-4 w-4 border-gray-300 text-[#224B75] focus:ring-[#224B75]"
+                                                {% if forloop.first %}checked{% endif %}
+                                            >
+                                            <label class="sr-only" for="source_transaction_{{ transaction.pk }}">Use as source</label>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </td>
 
                             <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                                 {{ transaction.transaction_date|date:"d M Y" }}
@@ -335,6 +378,22 @@
                 </tbody>
             </table>
         </div>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const selectAll = document.getElementById('select-all-transactions');
+                const checkboxes = document.querySelectorAll('.bulk-select');
+
+                if (selectAll) {
+                    selectAll.addEventListener('change', function () {
+                        checkboxes.forEach(function (checkbox) {
+                            checkbox.checked = selectAll.checked;
+                        });
+                    });
+                }
+            });
+        </script>
     {% else %}
         <div class="px-6 py-12 text-center">
             <h3 class="text-sm font-semibold text-gray-900">

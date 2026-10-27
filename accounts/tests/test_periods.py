@@ -55,6 +55,10 @@ class PeriodTests(AccountingTestBase):
             date(2027, 4, 5),
         )
 
+    def test_invalid_transaction_date_raises_validation_error(self):
+        with self.assertRaises(ValidationError):
+            get_or_create_period_for_date(None)
+
     def test_april_5_belongs_to_previous_tax_year(self):
         period = get_or_create_period_for_date(
             date(2026, 4, 5)

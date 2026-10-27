@@ -3,7 +3,7 @@
     "model": "business.businesssettings",
     "pk": 1,
     "fields": {
-        "business_name": "Alexander Acraman",
+        "business_name": "Alexander",
         "accounting_basis": "CASH",
         "vat_registered": false,
         "vat_scheme": "",

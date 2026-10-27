@@ -160,6 +160,23 @@ class TestJournal(AccountingTestBase):
                 ],
             )
 
+    def test_journal_rejects_invalid_amount_string(self):
+        with self.assertRaises(ValidationError):
+            create_journal_entry(
+                transaction_date=date(2026, 9, 1),
+                description="Invalid amount",
+                items=[
+                    {
+                        "account": self.bank,
+                        "debit": "not-a-number",
+                    },
+                    {
+                        "account": self.sales,
+                        "credit": Decimal("100.00"),
+                    },
+                ],
+            )
+
     def test_inactive_account_cannot_be_used(self):
         self.bank.is_active = False
         self.bank.save()

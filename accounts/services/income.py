@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from accounts.models import Account
-from business.models import BusinessSettings
+from business.services.settings import get_business_settings
 
 from .journal import create_journal_entry
 from .validation import validate_account_type, validate_payment_account
@@ -17,7 +17,7 @@ def record_income( *, transaction_date, amount, income_account, payment_account,
         Cr Income
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "CASH":
         raise NotImplementedError( "Accrual-basis income has not yet been implemented." )

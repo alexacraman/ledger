@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from business.models import BusinessSettings
+from business.services.settings import get_business_settings
 from accounts.models import Account
 from .journal import create_journal_entry
 from .validation import validate_account_type, validate_payment_account
@@ -22,7 +22,7 @@ def void_expense(*, expense):
         Dr Payment account
         Cr Expense account
     """
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "CASH":
         raise NotImplementedError(
@@ -88,7 +88,7 @@ def record_expense(*, expense, expense_account, payment_account, reference=""):
     Cr Bank/Cash
     """
 
-    settings = BusinessSettings.objects.get(pk=1)
+    settings = get_business_settings()
 
     if settings.accounting_basis != "CASH":
         raise NotImplementedError( "Accrual-basis expenses have not yet been implemented." )

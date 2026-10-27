@@ -662,8 +662,105 @@ def create_transaction_from_bank_transaction(
 
 
 # ----------------------------------------------------------------------
-# Create a new transaction from a suggested accounting treatment
+# Bulk reconcile multiple identical transactions using one treatment
 # ----------------------------------------------------------------------
+
+@transaction.atomic
+def bulk_create_transactions_from_suggested_treatment(
+    *,
+    bank_transactions,
+    source_bank_transaction,
+):
+    """
+    Apply the same suggested accounting treatment to a group of similar
+    unreconciled bank transactions.
+
+    Each selected bank transaction is reconciled to a fresh journal entry
+    created from the source treatment, so the data model remains one
+    transaction -> one journal entry.
+    """
+    selected_transactions = list(bank_transactions)
+
+    if not selected_transactions:
+        raise ValidationError("Please select at least one bank transaction.")
+
+    source_bank_transaction = (
+        BankTransaction.objects
+        .select_for_update()
+        .select_related(
+            "bank_account__account",
+            "journal_entry",
+        )
+        .get(
+            pk=source_bank_transaction.pk,
+        )
+    )
+
+    if not source_bank_transaction.reconciled:
+        raise ValidationError(
+            "The selected source transaction has not been reconciled yet."
+        )
+
+    source_amount = Decimal(source_bank_transaction.amount)
+    source_description = _normalise_description(source_bank_transaction.description)
+    source_bank_account_id = source_bank_transaction.bank_account_id
+
+    transactions = (
+        BankTransaction.objects
+        .select_for_update()
+        .select_related(
+            "bank_account__account",
+            "journal_entry",
+        )
+        .filter(
+            pk__in=[transaction.pk for transaction in selected_transactions],
+        )
+        .order_by("id")
+    )
+
+    if transactions.count() != len(selected_transactions):
+        raise ValidationError("One or more selected transactions could not be found.")
+
+    created_entries = []
+
+    for transaction in transactions:
+        if transaction.reconciled:
+            raise ValidationError(
+                f"Transaction {transaction.pk} has already been reconciled."
+            )
+
+        if transaction.journal_entry_id:
+            raise ValidationError(
+                f"Transaction {transaction.pk} is already linked to a journal entry."
+            )
+
+        if transaction.bank_account_id != source_bank_account_id:
+            raise ValidationError(
+                "Selected transactions must all belong to the same bank account."
+            )
+
+        if Decimal(transaction.amount) != source_amount:
+            raise ValidationError(
+                "Selected transactions must all have the same amount to use the same treatment."
+            )
+
+        if (
+            _normalise_description(transaction.description)
+            != source_description
+        ):
+            raise ValidationError(
+                "Selected transactions must all share the same description pattern."
+            )
+
+        created_entries.append(
+            create_transaction_from_suggested_treatment(
+                bank_transaction=transaction,
+                source_bank_transaction=source_bank_transaction,
+            )
+        )
+
+    return created_entries
+
 
 @transaction.atomic
 def create_transaction_from_suggested_treatment(
