@@ -1,0 +1,232 @@
+[
+{
+    "model": "accounts.account",
+    "pk": 1,
+    "fields": {
+        "code": "1000",
+        "name": "Bank",
+        "type": "ASSET",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 2,
+    "fields": {
+        "code": "1100",
+        "name": "Cash",
+        "type": "ASSET",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 3,
+    "fields": {
+        "code": "1200",
+        "name": "Accounts Receivable",
+        "type": "ASSET",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 4,
+    "fields": {
+        "code": "1300",
+        "name": "VAT Reclaimable",
+        "type": "ASSET",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 5,
+    "fields": {
+        "code": "2000",
+        "name": "Accounts Payable",
+        "type": "LIABILITY",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 6,
+    "fields": {
+        "code": "2100",
+        "name": "VAT Liability",
+        "type": "LIABILITY",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 7,
+    "fields": {
+        "code": "3000",
+        "name": "Capital",
+        "type": "EQUITY",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 8,
+    "fields": {
+        "code": "3100",
+        "name": "Drawings",
+        "type": "EQUITY",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 9,
+    "fields": {
+        "code": "4000",
+        "name": "Sales",
+        "type": "REVENUE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 10,
+    "fields": {
+        "code": "4100",
+        "name": "Sales Returns",
+        "type": "REVENUE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 11,
+    "fields": {
+        "code": "4200",
+        "name": "Discounts Allowed",
+        "type": "REVENUE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 12,
+    "fields": {
+        "code": "5000",
+        "name": "Purchases",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 13,
+    "fields": {
+        "code": "5100",
+        "name": "Purchase Returns",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 14,
+    "fields": {
+        "code": "5200",
+        "name": "Discounts Received",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 15,
+    "fields": {
+        "code": "5300",
+        "name": "General Expenses",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 16,
+    "fields": {
+        "code": "5400",
+        "name": "Irrecoverable Debts",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 17,
+    "fields": {
+        "code": "5500",
+        "name": "Bank Charges",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 18,
+    "fields": {
+        "code": "5600",
+        "name": "Depreciation",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 19,
+    "fields": {
+        "code": "5700",
+        "name": "Interest Expense",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 20,
+    "fields": {
+        "code": "5800",
+        "name": "Interest Income",
+        "type": "REVENUE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 21,
+    "fields": {
+        "code": "5350",
+        "name": "Charitable giving",
+        "type": "EXPENSE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 22,
+    "fields": {
+        "code": "4010",
+        "name": "PT / Income",
+        "type": "REVENUE",
+        "is_active": true
+    }
+},
+{
+    "model": "accounts.account",
+    "pk": 23,
+    "fields": {
+        "code": "4300",
+        "name": "State Support",
+        "type": "REVENUE",
+        "is_active": true
+    }
+}
+]

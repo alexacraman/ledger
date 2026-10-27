@@ -1,0 +1,20 @@
+[
+  {
+    "model": "accounts.accountingperiod",
+    "fields": {
+      "name": "2025/26",
+      "start_date": "2025-04-06",
+      "end_date": "2026-04-05",
+      "is_closed": false
+    }
+  },
+  {
+    "model": "accounts.accountingperiod",
+    "fields": {
+      "name": "2026/27",
+      "start_date": "2026-04-06",
+      "end_date": "2027-04-05",
+      "is_closed": false
+    }
+  }
+]
