@@ -1,11 +1,15 @@
+import calendar
 from datetime import date
+from decimal import Decimal
 
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Sum
 
-from accounts.models import Expense, Invoice, JournalEntry, Purchase
+from accounts.models import Expense, Invoice, JournalEntry, JournalItem, Purchase
 from business.models import AccountingBasisPeriod, Business, BusinessSettings, VATRegistrationPeriod
+
+VAT_REGISTRATION_THRESHOLD = Decimal("90000.00")
 
 
 def get_active_business_for_user(request):
@@ -29,6 +33,48 @@ def get_active_business_for_user(request):
     return business
 
 
+def _rolling_12_month_start(target_date):
+    """Return the date exactly 12 calendar months earlier."""
+    year = target_date.year - 1
+    month = target_date.month
+    day = target_date.day
+
+    last_day = calendar.monthrange(year, month)[1]
+    if day > last_day:
+        day = last_day
+
+    return date(year, month, day)
+
+
+def get_taxable_turnover_for_rolling_12_months(target_date):
+    """Return the estimated VAT-taxable turnover in the previous 12 months."""
+    start_date = _rolling_12_month_start(target_date)
+
+    total = Decimal("0.00")
+
+    for invoice in Invoice.objects.filter(
+        issue_date__gte=start_date,
+        issue_date__lte=target_date,
+        status__in=["POSTED", "SENT", "PARTIAL", "PAID"],
+    ):
+        total += invoice.total_net
+
+    total += Decimal(
+        str(
+            JournalItem.objects.filter(
+                entry__is_posted=True,
+                entry__transaction_date__gte=start_date,
+                entry__transaction_date__lte=target_date,
+                account__type="REVENUE",
+                credit__gt=0,
+                entry__invoice__isnull=True,
+            ).aggregate(total=Sum("credit"))["total"] or Decimal("0.00")
+        )
+    )
+
+    return total
+
+
 def get_business_settings(business=None):
     settings = BusinessSettings.objects.filter(business=business).first() if business else BusinessSettings.objects.order_by("pk").first()
 
@@ -39,6 +85,13 @@ def get_business_settings(business=None):
             vat_registered=False,
             vat_scheme="",
         )
+
+    turnover = get_taxable_turnover_for_rolling_12_months(date.today())
+
+    if turnover >= VAT_REGISTRATION_THRESHOLD and not settings.vat_registered:
+        settings.vat_registered = True
+        settings.vat_scheme = "STANDARD"
+        settings.save(update_fields=["vat_registered", "vat_scheme", "updated_at"])
 
     return settings
 
@@ -113,12 +166,32 @@ def get_vat_registration_for_date(target_date):
     )
 
     if row is not None:
+        if row.vat_registered:
+            return {
+                'vat_registered': True,
+                'vat_scheme': row.vat_scheme,
+            }
+
+        turnover = get_taxable_turnover_for_rolling_12_months(target_date)
+        if turnover >= VAT_REGISTRATION_THRESHOLD:
+            return {
+                'vat_registered': True,
+                'vat_scheme': 'STANDARD',
+            }
+
         return {
-            'vat_registered': row.vat_registered,
-            'vat_scheme': row.vat_scheme,
+            'vat_registered': False,
+            'vat_scheme': '',
         }
 
     settings = get_business_settings()
+    turnover = get_taxable_turnover_for_rolling_12_months(target_date)
+    if turnover >= VAT_REGISTRATION_THRESHOLD:
+        return {
+            'vat_registered': True,
+            'vat_scheme': 'STANDARD',
+        }
+
     return {
         'vat_registered': settings.vat_registered,
         'vat_scheme': settings.vat_scheme,

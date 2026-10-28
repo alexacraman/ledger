@@ -1,5 +1,5 @@
 from datetime import timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 import re
 
 from django.core.exceptions import ValidationError
@@ -701,6 +701,18 @@ def bulk_create_transactions_from_suggested_treatment(
             "The selected source transaction has not been reconciled yet."
         )
 
+    selected_transactions = [
+        transaction
+        for transaction in selected_transactions
+        if transaction.pk != source_bank_transaction.pk
+    ]
+
+    if not selected_transactions:
+        raise ValidationError(
+            "Please select at least one unreconciled target transaction "
+            "other than the source transaction."
+        )
+
     source_amount = Decimal(source_bank_transaction.amount)
     source_description = _normalise_description(source_bank_transaction.description)
     source_bank_account_id = source_bank_transaction.bank_account_id
@@ -737,11 +749,6 @@ def bulk_create_transactions_from_suggested_treatment(
         if transaction.bank_account_id != source_bank_account_id:
             raise ValidationError(
                 "Selected transactions must all belong to the same bank account."
-            )
-
-        if Decimal(transaction.amount) != source_amount:
-            raise ValidationError(
-                "Selected transactions must all have the same amount to use the same treatment."
             )
 
         if (
@@ -885,13 +892,9 @@ def create_transaction_from_suggested_treatment(
             "belongs to a different bank account."
         )
 
-    if (
-        Decimal(source_bank_transaction.amount)
-        != amount
-    ):
+    if source_bank_transaction.amount == Decimal("0.00"):
         raise ValidationError(
-            "The suggested source transaction "
-            "has a different amount."
+            "The suggested source transaction has a zero amount."
         )
 
     if (
@@ -920,10 +923,10 @@ def create_transaction_from_suggested_treatment(
         bank_account,
     )
 
-    if source_bank_impact != amount:
+    if source_bank_impact != Decimal(source_bank_transaction.amount):
         raise ValidationError(
             "The suggested source journal entry "
-            "does not match the bank transaction amount."
+            "does not match the source bank transaction amount."
         )
 
     if len(source_bank_items) != 1:
@@ -946,6 +949,11 @@ def create_transaction_from_suggested_treatment(
     # --------------------------------------------------------------
 
     items = []
+    source_amount = Decimal(source_bank_transaction.amount)
+    proportion = Decimal("0.00")
+
+    if source_amount != Decimal("0.00"):
+        proportion = amount / source_amount
 
     if amount > 0:
 
@@ -976,11 +984,26 @@ def create_transaction_from_suggested_treatment(
                 f"is inactive."
             )
 
+        scaled_debit = Decimal("0.00")
+        scaled_credit = Decimal("0.00")
+
+        if source_item.debit:
+            scaled_debit = (source_item.debit * proportion).quantize(
+                Decimal("0.01"),
+                rounding=ROUND_HALF_UP,
+            )
+
+        if source_item.credit:
+            scaled_credit = (source_item.credit * proportion).quantize(
+                Decimal("0.01"),
+                rounding=ROUND_HALF_UP,
+            )
+
         items.append(
             {
                 "account": account,
-                "debit": source_item.debit,
-                "credit": source_item.credit,
+                "debit": scaled_debit,
+                "credit": scaled_credit,
             }
         )
 

@@ -183,12 +183,42 @@
                 Imported transactions and their accounting status.
             </p>
         </div>
+
+        <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-1">
+            <a
+                href="?show_reconciled=1"
+                class="rounded-md px-3 py-1.5 text-xs font-semibold {% if show_reconciled %}bg-white text-[#224B75] shadow-sm{% else %}text-gray-500 hover:text-gray-700{% endif %}"
+            >
+                All
+            </a>
+            <a
+                href="?show_reconciled=0"
+                class="rounded-md px-3 py-1.5 text-xs font-semibold {% if not show_reconciled %}bg-white text-[#224B75] shadow-sm{% else %}text-gray-500 hover:text-gray-700{% endif %}"
+            >
+                Unreconciled only
+            </a>
+        </div>
     </div>
 
     {% if transactions %}
         <form method="post" class="space-y-4">
             {% csrf_token %}
             <input type="hidden" name="action" value="bulk_reconcile">
+
+            {% if source_candidates %}
+                <div class="rounded-xl border  bg-blue-50 p-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <label for="source_transaction" class="text-sm font-semibold text-blue-900">Source transaction</label>
+                        <select id="source_transaction" name="source_transaction" class="w-full max-w-md rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-[#224B75] focus:outline-none focus:ring-2 focus:ring-[#224B75]/20">
+                            {% for transaction in source_candidates %}
+                                <option value="{{ transaction.pk }}" {% if forloop.first %}selected{% endif %}>
+                                    {{ transaction.transaction_date|date:"d M Y" }} · {{ transaction.description }} · £{{ transaction.amount|floatformat:2 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -259,26 +289,16 @@
                     {% for transaction in transactions %}
                         <tr class="hover:bg-gray-50">
                             <td class="whitespace-nowrap px-3 py-4 align-top">
-                                {% if not transaction.reconciled %}
-                                    <div class="flex flex-col items-center gap-2">
+                                <div class="flex flex-col items-center gap-2">
+                                    {% if not transaction.reconciled %}
                                         <input
                                             type="checkbox"
                                             name="selected_transactions"
                                             value="{{ transaction.pk }}"
                                             class="bulk-select h-4 w-4 rounded border-gray-300 text-[#224B75] focus:ring-[#224B75]"
                                         >
-                                        {% if transaction.suggested_treatment %}
-                                            <input
-                                                type="radio"
-                                                name="source_transaction"
-                                                value="{{ transaction.pk }}"
-                                                class="h-4 w-4 border-gray-300 text-[#224B75] focus:ring-[#224B75]"
-                                                {% if forloop.first %}checked{% endif %}
-                                            >
-                                            <label class="sr-only" for="source_transaction_{{ transaction.pk }}">Use as source</label>
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
+                                    {% endif %}
+                                </div>
                             </td>
 
                             <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">

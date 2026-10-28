@@ -4,8 +4,9 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from accounts.models import Account
+from accounts.models import Account, Invoice, InvoiceLineItem
 from accounts.services.income import record_income
+from contacts.models import Customer
 
 from .models import AccountingBasisPeriod, Business, BusinessSettings, VATRegistrationPeriod
 from .services.settings import (
@@ -245,6 +246,33 @@ class BusinessSettingsTests(TestCase):
         self.assertFalse(before["vat_registered"])
         self.assertTrue(after["vat_registered"])
         self.assertEqual(after["vat_scheme"], "STANDARD")
+
+    def test_vat_registration_is_triggered_when_rolling_12_month_turnover_exceeds_threshold(self):
+        customer = Customer.objects.create(name="Threshold Client", email="client@example.com")
+
+        invoice = Invoice.objects.create(
+            invoice_number="INV-THRESHOLD-001",
+            customer=customer,
+            client_name="Threshold Client",
+            client_email="client@example.com",
+            issue_date="2025-07-01",
+            due_date="2025-07-31",
+            status="POSTED",
+        )
+
+        InvoiceLineItem.objects.create(
+            invoice=invoice,
+            description="Taxable sales",
+            quantity=Decimal("1"),
+            unit_price=Decimal("95000.00"),
+            vat_rate=Decimal("0.00"),
+            vat_amount=Decimal("0.00"),
+        )
+
+        status = get_vat_registration_for_date(self._date_from_iso("2026-06-30"))
+
+        self.assertTrue(status["vat_registered"])
+        self.assertEqual(status["vat_scheme"], "STANDARD")
 
     def test_vat_registration_periods_cannot_overlap(self):
         VATRegistrationPeriod.objects.create(

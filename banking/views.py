@@ -70,6 +70,15 @@ def bank_account_detail(request, pk):
         pk=pk,
     )
 
+    show_reconciled = request.GET.get("show_reconciled", "1") not in {"0", "false", "False"}
+
+    source_candidates = (
+        bank_account.transactions
+        .select_related("journal_entry")
+        .filter(reconciled=True, journal_entry__isnull=False)
+        .order_by("-transaction_date", "-id")
+    )
+
     if request.method == "POST":
         action = request.POST.get("action")
 
@@ -82,50 +91,77 @@ def bank_account_detail(request, pk):
                     "Please select at least one unreconciled transaction.",
                 )
             else:
-                source_transaction_id = request.POST.get("source_transaction") or selected_ids[0]
+                source_transaction_id = request.POST.get("source_transaction")
 
-                source_transaction = get_object_or_404(
-                    BankTransaction.objects.select_related(
-                        "bank_account__account",
-                        "journal_entry",
-                    ),
-                    pk=source_transaction_id,
-                    bank_account=bank_account,
-                )
-
-                selected_transactions = (
-                    BankTransaction.objects
-                    .select_related(
-                        "bank_account__account",
-                        "journal_entry",
-                    )
-                    .filter(
-                        bank_account=bank_account,
-                        pk__in=selected_ids,
-                    )
-                    .order_by("-transaction_date", "-id")
-                )
-
-                try:
-                    bulk_create_transactions_from_suggested_treatment(
-                        bank_transactions=selected_transactions,
-                        source_bank_transaction=source_transaction,
-                    )
-                except ValidationError as exc:
-                    messages.error(request, str(exc))
-                else:
-                    messages.success(
+                if source_transaction_id is None:
+                    messages.error(
                         request,
-                        (
-                            f"{selected_transactions.count()} transaction"
-                            f"{'s' if selected_transactions.count() != 1 else ''} "
-                            "reconciled using the same treatment."
-                        ),
+                        "Please choose a reconciled source transaction before bulk reconciling.",
                     )
-                    return redirect(
-                        "banking:bank_account_detail",
-                        pk=bank_account.pk,
-                    )
+                else:
+                    try:
+                        source_transaction_id = int(source_transaction_id)
+                    except (TypeError, ValueError):
+                        messages.error(
+                            request,
+                            "The selected source transaction is invalid.",
+                        )
+                        source_transaction_id = None
+
+                    if source_transaction_id is not None:
+                        selected_ids = [
+                            pk for pk in selected_ids
+                            if pk not in (None, "") and int(pk) != source_transaction_id
+                        ]
+
+                        source_transaction = get_object_or_404(
+                            BankTransaction.objects.select_related(
+                                "bank_account__account",
+                                "journal_entry",
+                            ),
+                            pk=source_transaction_id,
+                            bank_account=bank_account,
+                        )
+
+                        selected_transactions = (
+                            BankTransaction.objects
+                            .select_related(
+                                "bank_account__account",
+                                "journal_entry",
+                            )
+                            .filter(
+                                bank_account=bank_account,
+                                pk__in=selected_ids,
+                            )
+                            .order_by("-transaction_date", "-id")
+                        )
+
+                        if not selected_transactions.exists():
+                            messages.error(
+                                request,
+                                "Please select at least one unreconciled target transaction other than the source transaction.",
+                            )
+                        else:
+                            try:
+                                bulk_create_transactions_from_suggested_treatment(
+                                    bank_transactions=selected_transactions,
+                                    source_bank_transaction=source_transaction,
+                                )
+                            except ValidationError as exc:
+                                messages.error(request, str(exc))
+                            else:
+                                messages.success(
+                                    request,
+                                    (
+                                        f"{selected_transactions.count()} transaction"
+                                        f"{'s' if selected_transactions.count() != 1 else ''} "
+                                        "reconciled using the same treatment."
+                                    ),
+                                )
+                                return redirect(
+                                    "banking:bank_account_detail",
+                                    pk=bank_account.pk,
+                                )
 
     transactions = (
         bank_account.transactions
@@ -133,13 +169,13 @@ def bank_account_detail(request, pk):
         .order_by("-transaction_date", "-id")
     )
 
-    transaction_count = transactions.count()
+    if not show_reconciled:
+        transactions = transactions.filter(reconciled=False)
 
-    reconciled_count = transactions.filter(
-        reconciled=True,
-    ).count()
-
+    transaction_count = bank_account.transactions.count()
+    reconciled_count = bank_account.transactions.filter(reconciled=True).count()
     unreconciled_count = transaction_count - reconciled_count
+    filtered_transaction_count = transactions.count()
 
     # --------------------------------------------------------------
     # Historical accounting treatment suggestions
@@ -159,9 +195,12 @@ def bank_account_detail(request, pk):
         {
             "bank_account": bank_account,
             "transactions": transactions,
+            "source_candidates": source_candidates,
             "transaction_count": transaction_count,
+            "filtered_transaction_count": filtered_transaction_count,
             "reconciled_count": reconciled_count,
             "unreconciled_count": unreconciled_count,
+            "show_reconciled": show_reconciled,
         },
     )
 

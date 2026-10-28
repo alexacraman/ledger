@@ -611,3 +611,112 @@ class BankStatementImportTests(TestCase):
             JournalItem.objects.count(),
             0,
         )
+
+
+class BulkReconciliationTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.bank_ledger = Account.objects.create(
+            code="1000",
+            name="Bank",
+            type="ASSET",
+        )
+        cls.revenue = Account.objects.create(
+            code="4000",
+            name="Sales",
+            type="REVENUE",
+        )
+
+        cls.bank_account = BankAccount.objects.create(
+            name="Test Bank Account",
+            account=cls.bank_ledger,
+        )
+
+    def test_bulk_reconcile_excludes_the_source_transaction_from_targets(self):
+        source_transaction = BankTransaction.objects.create(
+            bank_account=self.bank_account,
+            transaction_date=date(2026, 4, 2),
+            description="Customer payment",
+            amount=Decimal("100.00"),
+            reference="BACS-001",
+            reconciled=True,
+            journal_entry=create_journal_entry(
+                transaction_date=date(2026, 4, 2),
+                description="Customer payment",
+                reference="BACS-001",
+                items=[
+                    {"account": self.bank_ledger, "debit": Decimal("100.00")},
+                    {"account": self.revenue, "credit": Decimal("100.00")},
+                ],
+            ),
+        )
+
+        target_transaction = BankTransaction.objects.create(
+            bank_account=self.bank_account,
+            transaction_date=date(2026, 4, 3),
+            description="Customer payment",
+            amount=Decimal("100.00"),
+            reference="BACS-002",
+        )
+
+        from banking.services.reconciliation import bulk_create_transactions_from_suggested_treatment
+
+        created = bulk_create_transactions_from_suggested_treatment(
+            bank_transactions=[source_transaction, target_transaction],
+            source_bank_transaction=source_transaction,
+        )
+
+        self.assertEqual(len(created), 1)
+        self.assertEqual(created[0].items.filter(account=self.bank_ledger).count(), 1)
+
+        target_transaction = BankTransaction.objects.get(pk=target_transaction.pk)
+        source_transaction = BankTransaction.objects.get(pk=source_transaction.pk)
+
+        self.assertTrue(target_transaction.reconciled)
+        self.assertTrue(source_transaction.reconciled)
+
+    def test_bulk_reconcile_allows_same_description_with_different_amounts(self):
+        source_transaction = BankTransaction.objects.create(
+            bank_account=self.bank_account,
+            transaction_date=date(2026, 4, 2),
+            description="British Gas",
+            amount=Decimal("-100.00"),
+            reference="BG-001",
+            reconciled=True,
+            journal_entry=create_journal_entry(
+                transaction_date=date(2026, 4, 2),
+                description="British Gas",
+                reference="BG-001",
+                items=[
+                    {"account": self.bank_ledger, "credit": Decimal("100.00")},
+                    {"account": self.revenue, "debit": Decimal("100.00")},
+                ],
+            ),
+        )
+
+        target_transaction = BankTransaction.objects.create(
+            bank_account=self.bank_account,
+            transaction_date=date(2026, 4, 3),
+            description="British Gas",
+            amount=Decimal("-80.00"),
+            reference="BG-002",
+        )
+
+        from banking.services.reconciliation import bulk_create_transactions_from_suggested_treatment
+
+        created = bulk_create_transactions_from_suggested_treatment(
+            bank_transactions=[target_transaction],
+            source_bank_transaction=source_transaction,
+        )
+
+        self.assertEqual(len(created), 1)
+
+        target_transaction = BankTransaction.objects.get(pk=target_transaction.pk)
+        self.assertTrue(target_transaction.reconciled)
+
+        bank_line = created[0].items.get(account=self.bank_ledger)
+        expense_line = created[0].items.get(account=self.revenue)
+
+        self.assertEqual(bank_line.credit, Decimal("80.00"))
+        self.assertEqual(expense_line.debit, Decimal("80.00"))

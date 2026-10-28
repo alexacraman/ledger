@@ -87,3 +87,5 @@ class YearEndAdjustmentForm(forms.Form):
                 self.add_error(field_name, "This field is required for the selected adjustment type.")
 
         return cleaned_data
+
+

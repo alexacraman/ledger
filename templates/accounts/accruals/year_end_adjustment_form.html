@@ -1,73 +1,153 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold text-slate-900 mb-6">Year-end adjustments</h1>
+<div class="mx-auto max-w-5xl px-4 py-8">
 
-    <form method="post" class="bg-white border border-slate-200 rounded-lg shadow-sm p-6 space-y-6">
+    {# Page heading #}
+    <div class="mb-8">
+        <h1 class="text-2xl font-semibold text-slate-900">
+            Year-end adjustments
+        </h1>
+        <p class="mt-2 text-sm text-slate-600">
+            Record adjustments required to prepare your accounts for the end of the financial year.
+        </p>
+    </div>
+
+    <form method="post" class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
         {% csrf_token %}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                {{ form.adjustment_type.label_tag }}
-                {{ form.adjustment_type }}
-                {% if form.adjustment_type.errors %}
-                    <p class="text-red-600 text-sm mt-1">{{ form.adjustment_type.errors|join:', ' }}</p>
-                {% endif %}
+        {# Non-field errors #}
+        {% if form.non_field_errors %}
+            <div class="border-b border-red-200 bg-red-50 px-6 py-4">
+                {% for error in form.non_field_errors %}
+                    <p class="text-sm text-red-700">{{ error }}</p>
+                {% endfor %}
             </div>
+        {% endif %}
 
-            <div>
-                {{ form.transaction_date.label_tag }}
-                {{ form.transaction_date }}
-                {% if form.transaction_date.errors %}
-                    <p class="text-red-600 text-sm mt-1">{{ form.transaction_date.errors|join:', ' }}</p>
-                {% endif %}
-            </div>
+        <div class="space-y-8 p-6">
 
-            <div>
-                {{ form.amount.label_tag }}
-                {{ form.amount }}
-                {% if form.amount.errors %}
-                    <p class="text-red-600 text-sm mt-1">{{ form.amount.errors|join:', ' }}</p>
-                {% endif %}
-            </div>
+            {# General details #}
+            <section>
+                <h2 class="text-base font-semibold text-slate-900">
+                    Adjustment details
+                </h2>
+                <p class="mt-1 text-sm text-slate-500">
+                    Select the adjustment type and enter the transaction details.
+                </p>
 
-            <div>
-                {{ form.reference.label_tag }}
-                {{ form.reference }}
-                {% if form.reference.errors %}
-                    <p class="text-red-600 text-sm mt-1">{{ form.reference.errors|join:', ' }}</p>
-                {% endif %}
-            </div>
-        </div>
+                <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
 
-        <div>
-            {{ form.description.label_tag }}
-            {{ form.description }}
-            {% if form.description.errors %}
-                <p class="text-red-600 text-sm mt-1">{{ form.description.errors|join:', ' }}</p>
-            {% endif %}
-        </div>
+                    {% for field in form %}
+                        {% if field.name == 'adjustment_type' or field.name == 'transaction_date' or field.name == 'amount' or field.name == 'reference' %}
+                            <div>
+                                <label for="{{ field.id_for_label }}" class="mb-1.5 block text-sm font-medium text-slate-700">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-red-600">*</span>
+                                    {% endif %}
+                                </label>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% for field in form %}
-                {% if field.name not in 'adjustment_type,transaction_date,amount,description,reference' %}
-                    <div>
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.errors %}
-                            <p class="text-red-600 text-sm mt-1">{{ field.errors|join:', ' }}</p>
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <p class="mt-1 text-sm text-slate-500">{{ field.help_text }}</p>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <p class="mt-1 text-sm text-red-600">
+                                        {{ field.errors|join:', ' }}
+                                    </p>
+                                {% endif %}
+                            </div>
                         {% endif %}
-                    </div>
-                {% endif %}
-            {% endfor %}
+                    {% endfor %}
+
+                </div>
+
+                {# Description #}
+                <div class="mt-5">
+                    <label for="{{ form.description.id_for_label }}" class="mb-1.5 block text-sm font-medium text-slate-700">
+                        {{ form.description.label }}
+                        {% if form.description.field.required %}
+                            <span class="text-red-600">*</span>
+                        {% endif %}
+                    </label>
+
+                    {{ form.description }}
+
+                    {% if form.description.help_text %}
+                        <p class="mt-1 text-sm text-slate-500">{{ form.description.help_text }}</p>
+                    {% endif %}
+
+                    {% if form.description.errors %}
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ form.description.errors|join:', ' }}
+                        </p>
+                    {% endif %}
+                </div>
+            </section>
+
+            {# Account selection #}
+            <section class="border-t border-slate-200 pt-6">
+                <h2 class="text-base font-semibold text-slate-900">
+                    Account selection
+                </h2>
+                <p class="mt-1 text-sm text-slate-500">
+                    Select the accounts relevant to your chosen adjustment type. Only the applicable accounts need to be completed.
+                </p>
+
+                <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                    {% for field in form %}
+                        {% if field.name != 'adjustment_type' and field.name != 'transaction_date' and field.name != 'amount' and field.name != 'reference' and field.name != 'description' %}
+                            <div>
+                                <label for="{{ field.id_for_label }}" class="mb-1.5 block text-sm font-medium text-slate-700">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-red-600">*</span>
+                                    {% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <p class="mt-1 text-sm text-slate-500">{{ field.help_text }}</p>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <p class="mt-1 text-sm text-red-600">
+                                        {{ field.errors|join:', ' }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+            </section>
+
         </div>
 
-        <div class="pt-2">
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+        {# Form actions #}
+        <div class="flex flex-col-reverse gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:justify-end">
+            <a href="{% url 'accounts:dashboard' %}"
+               class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="inline-flex items-center justify-center rounded-md bg-[#224B75] px-5 py-2 text-sm font-medium text-white hover:bg-[#193957] focus:outline-none focus:ring-2 focus:ring-[#224B75] focus:ring-offset-2">
                 Post adjustment
             </button>
         </div>
+
     </form>
+
+    <p class="mt-4 text-xs text-slate-500">
+        Fields marked with <span class="text-red-600">*</span> are required.
+    </p>
+
 </div>
 {% endblock %}
